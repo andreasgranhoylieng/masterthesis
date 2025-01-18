@@ -1,0 +1,12 @@
+# Ignore everything in the datasets folder except .gitkeep
+datasets/*
+!datasets/.gitkeep
+
+
+# Ignore everything in the ultralytics_models folder except .gitkeep
+ultralytics_models/pose/*
+!ultralytics_models/pose/.gitkeep
+
+# Ignore all folders named "runs" and their contents
+runs/
+
