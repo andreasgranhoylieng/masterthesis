@@ -11,3 +11,4 @@ ultralytics_models/pose/*
 runs/
 
 .DS_Store
+*.pt
