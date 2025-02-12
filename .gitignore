@@ -10,5 +10,9 @@ ultralytics_models/pose/*
 # Ignore all folders named "runs" and their contents
 runs/
 
-.DS_Store
+*.DS_Store
 *.pt
+
+*.mp4
+*.MOV
+*.csv
