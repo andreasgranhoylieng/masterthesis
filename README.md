@@ -52,11 +52,11 @@ This repository contains a comprehensive system for syringe detection, tracking,
    ```
 2. Train the model:
    ```bash
-   jupyter notebook volume_estimation_yolo/train.ipynb
+   jupyter notebook volume_estimation/train.ipynb
    ```
 3. Run inference:
-   - For video files: `volume_estimation_yolo/pose_video_visualizer.ipynb`
-   - For webcam: `volume_estimation_yolo/webcam_inference_pose.ipynb`
+   - For video files: `volume_estimation/pose_video_visualizer.ipynb`
+   - For webcam: `volume_estimation/webcam_inference_pose.ipynb`
 
 ### 3. Syringe Tracking
 1. Train the detection model:
@@ -78,7 +78,7 @@ This repository contains a comprehensive system for syringe detection, tracking,
 │   ├── frames/               # Frames extracted from videos
 │   ├── github_files/         # GroundingDINO weights and configs
 │   └── main.ipynb            # Annotation notebook
-├── volume_estimation_yolo/   # Volume estimation system
+├── volume_estimation/        # Volume estimation system
 │   ├── train.ipynb           # Training notebook
 │   ├── pose_video_visualizer.ipynb # Video processing
 │   └── webcam_inference_pose.ipynb # Webcam inference
