@@ -18,3 +18,7 @@ runs/
 *.csv
 *.pth
 .aider*
+
+# Environment files
+.env
+.env.*
