@@ -1,0 +1,30 @@
+name: syringe-ml
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
+  - pytorch::pytorch
+  - torchvision
+  - torchaudio
+  - cudatoolkit=11.8
+  - numpy
+  - pandas
+  - matplotlib
+  - opencv
+  - jupyterlab
+  - notebook
+  - tqdm
+  - scipy
+  - pillow
+  - pip:
+    - ultralytics
+    - groundingdino
+    - roboflow
+    - supervision
+    - torchmetrics
+    - torchinfo
+    - torchsummary
