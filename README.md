@@ -19,7 +19,7 @@ This repository contains a comprehensive system for syringe detection, tracking,
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/syringe-ml.git
+   git clone https://github.com/andreasgranhoylieng/masterthesis.git
    cd syringe-ml
    ```
 
@@ -40,9 +40,10 @@ This repository contains a comprehensive system for syringe detection, tracking,
 ## Usage
 
 ### 1. Automatic Annotation with GroundingDINO
-- Place your images in `dino/frames/`
+- Place your images or videos in `dino/images/` or `dino/videos/`
 - Run `dino/main.ipynb` to generate annotations
 - Annotations will be saved in Pascal VOC format
+- These annotations can be uploaded to Roboflow
 
 ### 2. Volume Estimation with Keypoint Detection
 1. Download datasets:
@@ -71,30 +72,21 @@ This repository contains a comprehensive system for syringe detection, tracking,
 ```
 .
 ├── dino/                     # GroundingDINO automatic annotation
-│   ├── frames/               # Input images for annotation
-│   ├── annotations/          # Generated Pascal VOC annotations
+│   ├── images/               # Input images for annotation
+│   ├── videos/               # Input videos for annotation
+│   ├── annotations/          # Generated Pascal VOC annotations from images or videos
+│   ├── frames/               # Frames extracted from videos
+│   ├── github_files/         # GroundingDINO weights and configs
 │   └── main.ipynb            # Annotation notebook
 ├── volume_estimation_yolo/   # Volume estimation system
 │   ├── train.ipynb           # Training notebook
-│   ├── pose_visualizer.ipynb # Image visualization
 │   ├── pose_video_visualizer.ipynb # Video processing
 │   └── webcam_inference_pose.ipynb # Webcam inference
 ├── syringe_tracking/         # Syringe tracking system
 │   ├── train.ipynb           # Training notebook
 │   ├── video_inference_od.ipynb # Video tracking
 │   └── webcam_inference_od.ipynb # Webcam tracking
-├── datasets/                 # Dataset storage
-├── videos/                   # Input/output videos
+├── datasets/                 # Dataset storage from Roboflow
 ├── environment.yml           # Conda environment
 └── README.md                 # This file
 ```
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- GroundingDINO for zero-shot object detection
-- Ultralytics YOLOv8 for pose estimation
-- Roboflow for dataset management
