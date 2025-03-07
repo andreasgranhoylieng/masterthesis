@@ -42,7 +42,7 @@ jupyter notebook video_inference_od.ipynb
 - Multi-GPU training support
 
 ## Dependencies
-- Ultralytics YOLOv8
+- Ultralytics YOLO11
 - ByteTrack
 - OpenCV
 - PyTorch

@@ -41,7 +41,7 @@ jupyter notebook pose_video_visualizer.ipynb
 - CSV export of volume timeseries
 
 ## Dependencies
-- Ultralytics YOLOv8
+- Ultralytics YOLO11
 - OpenCV
 - NumPy
 - Pandas
