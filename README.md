@@ -1,92 +1,66 @@
 # Syringe Detection and Volume Estimation System
 
-This repository contains a comprehensive system for syringe detection, tracking, and volume estimation using computer vision and deep learning. The system consists of three main components:
+This repository contains a system for syringe detection, tracking, and volume estimation using computer vision and deep learning.
 
-1. **Automatic Annotation with GroundingDINO** - For generating training data
-2. **Keypoint Detection for Volume Estimation** - For measuring syringe plunger displacement
-3. **Syringe Tracking** - For tracking multiple syringes in video streams
+## Components
+
+1.  **Automatic Annotation (`dino/`)**: Uses GroundingDINO to generate initial annotations for training data.
+2.  **Syringe Tracking (`syringe_tracking/`)**: Detects and tracks syringes in video streams using YOLO and ByteTrack.
+3.  **Volume Estimation (`volume_estimation/`)**: Estimates syringe volume based on keypoint detection (plunger and barrel tip).
 
 ## Features
 
-- 🎯 Automatic annotation of syringe images using GroundingDINO
-- 📏 Precise volume estimation using keypoint detection
-- 📹 Real-time syringe tracking in video streams
-- 📊 CSV export of volume measurements over time
-- 🎥 Webcam and video file support
-- 📦 Easy-to-use Jupyter Notebook interfaces
+-   Automatic annotation generation.
+-   Real-time syringe detection and tracking.
+-   Volume estimation via keypoint analysis.
+-   CSV export of volume measurements.
+-   Supports video files and webcam streams.
+-   Jupyter Notebook interfaces for ease of use.
 
-## Installation
+## Setup
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/andreasgranhoylieng/masterthesis.git
-   cd syringe-ml
-   ```
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/andreasgranhoylieng/masterthesis.git
+    cd masterthesis
+    ```
 
-2. Create and activate the conda environment:
-   ```bash
-   conda env create -f environment.yml
-   conda activate syringe-ml
-   ```
+2.  **Create Conda Environment:**
+    ```bash
+    conda env create -f environment.yml
+    conda activate syringe-ml
+    ```
+    *(Note: Ensure necessary model weights like GroundingDINO are downloaded. See `dino/README.md` for details).*
 
-3. Install GroundingDINO weights:
-   ```bash
-   cd dino
-   mkdir -p github_files
-   wget https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth -O github_files/groundingdino_swint_ogc.pth
-   cd ..
-   ```
+3.  **Download Datasets (Optional):**
+    If using pre-prepared datasets (e.g., from Roboflow), run the download notebook:
+    ```bash
+    jupyter notebook download_datasets.ipynb
+    ```
 
 ## Usage
 
-### 1. Automatic Annotation with GroundingDINO
-- Place your images or videos in `dino/images/` or `dino/videos/`
-- Run `dino/main.ipynb` to generate annotations
-- Annotations will be saved in Pascal VOC format
-- These annotations can be uploaded to Roboflow
+Each component resides in its own directory with specific instructions:
 
-### 2. Volume Estimation with Keypoint Detection
-1. Download datasets:
-   ```bash
-   jupyter notebook download_datasets.ipynb
-   ```
-2. Train the model:
-   ```bash
-   jupyter notebook volume_estimation/train.ipynb
-   ```
-3. Run inference:
-   - For video files: `volume_estimation/pose_video_visualizer.ipynb`
-   - For webcam: `volume_estimation/webcam_inference_pose.ipynb`
-
-### 3. Syringe Tracking
-1. Train the detection model:
-   ```bash
-   jupyter notebook syringe_tracking/train.ipynb
-   ```
-2. Run tracking:
-   - For video files: `syringe_tracking/video_inference_od.ipynb`
-   - For webcam: `syringe_tracking/webcam_inference_od.ipynb`
+-   **`dino/`**: Run `main.ipynb` for automatic annotation. Place input images/videos in `dino/images/` or `dino/videos/`.
+-   **`syringe_tracking/`**:
+    -   Train the detection model: `python train.py` (adjust config as needed).
+    -   Run inference: Use `video_inference_od.ipynb` or `webcam_inference_od.ipynb`.
+-   **`volume_estimation/`**:
+    -   Train the keypoint model: `python train.py` (adjust config as needed).
+    -   Run inference and visualization: Use `video_and_webcam_inference.ipynb` or `pose_visualizer.ipynb`.
+    -   Data cleaning: `clean_syringe_data.ipynb`.
+    -   Tracking animation: `animate_tracking_history.py`.
 
 ## Folder Structure
 
 ```
 .
-├── dino/                     # GroundingDINO automatic annotation
-│   ├── images/               # Input images for annotation
-│   ├── videos/               # Input videos for annotation
-│   ├── annotations/          # Generated Pascal VOC annotations from images or videos
-│   ├── frames/               # Frames extracted from videos
-│   ├── github_files/         # GroundingDINO weights and configs
-│   └── main.ipynb            # Annotation notebook
-├── volume_estimation/        # Volume estimation system
-│   ├── train.ipynb           # Training notebook
-│   ├── pose_video_visualizer.ipynb # Video processing
-│   └── webcam_inference_pose.ipynb # Webcam inference
-├── syringe_tracking/         # Syringe tracking system
-│   ├── train.ipynb           # Training notebook
-│   ├── video_inference_od.ipynb # Video tracking
-│   └── webcam_inference_od.ipynb # Webcam tracking
-├── datasets/                 # Dataset storage from Roboflow
-├── environment.yml           # Conda environment
+├── datasets/                 # Downloaded datasets
+├── dino/                     # Automatic annotation using GroundingDINO
+├── syringe_tracking/         # Syringe detection and tracking
+├── volume_estimation/        # Keypoint detection for volume estimation
+├── .gitignore
+├── download_datasets.ipynb   # Notebook to download datasets
+├── environment.yml           # Conda environment definition
 └── README.md                 # This file
-```
