@@ -1,4 +1,3 @@
-import argparse
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -56,7 +55,6 @@ def main(csv_path: str) -> None:
     plt.show()
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Animate track paths from a CSV file.")
-    parser.add_argument('csv_path', type=str, help="Path to the CSV file")
-    args = parser.parse_args()
-    main(args.csv_path)
+    # Define the path to the CSV file directly.
+    input_csv_path = "volume_estimation/syringe_data.csv" 
+    main(input_csv_path)
