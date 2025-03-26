@@ -1,6 +1,5 @@
 from ultralytics import YOLO
 
-
 dataset_version = input("Enter the dataset version: ")
 model_type = input("Enter the model type: ")
 
@@ -14,9 +13,9 @@ results = model.train(
     workers=32,
     device=[0, 1, 2],
     batch=3*4,
-    augment=True,          
+    augment=True,
     flipud=0.0,
-    fliplr=0.0,            
+    fliplr=0.0,
     degrees=170,
     single_cls=True,
     visualize=True,

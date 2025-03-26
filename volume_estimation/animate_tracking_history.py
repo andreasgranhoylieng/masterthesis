@@ -1,7 +1,9 @@
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 from typing import List
+
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+import pandas as pd
+
 
 def main(csv_path: str) -> None:
     # Read the CSV into a dataframe.
@@ -17,7 +19,10 @@ def main(csv_path: str) -> None:
     # Set up the plot.
     fig, ax = plt.subplots()
     # Create a line for each track.
-    lines = {track_id: ax.plot([], [], marker='o', label=f'Track {track_id}')[0] for track_id in track_ids}
+    lines = {
+        track_id: ax.plot([], [], marker='o', label=f'Track {track_id}')[0]
+        for track_id in track_ids
+    }
 
     def init() -> List:
         """Initialize the plot limits and return the line objects."""
@@ -29,11 +34,17 @@ def main(csv_path: str) -> None:
     def update(frame: int) -> List:
         """
         Update the plot for the current frame.
-        The cumulative valid data (non-NaN center_x and center_y) is plotted up to the current timestamp.
+        The cumulative valid data (non-NaN center_x and center_y) is plotted
+        up to the current timestamp.
         """
         current_time = unique_timestamps[frame]
         # Filter cumulative data up to the current timestamp, excluding rows with NaN.
-        current_data = df[(df['timestamp'] <= current_time) & (df['center_x'].notna()) & (df['center_y'].notna()) & (df['track_id'].notna())]
+        current_data = df[
+            (df['timestamp'] <= current_time) &
+            (df['center_x'].notna()) &
+            (df['center_y'].notna()) &
+            (df['track_id'].notna())
+        ]
         for track_id in track_ids:
             track_data = current_data[current_data['track_id'] == track_id]
             x = track_data['center_x'].values
@@ -43,7 +54,8 @@ def main(csv_path: str) -> None:
         return list(lines.values())
 
     # Create the animation. Every unique timestamp, even empty ones, is a frame.
-    ani = animation.FuncAnimation(
+    # Assign to _ to indicate it's intentionally unused but needs to be kept alive.
+    _ = animation.FuncAnimation(
         fig, update, frames=len(unique_timestamps),
         init_func=init, blit=True, repeat=False
     )
@@ -56,5 +68,5 @@ def main(csv_path: str) -> None:
 
 if __name__ == '__main__':
     # Define the path to the CSV file directly.
-    input_csv_path = "syringe_data.csv" 
+    input_csv_path = "syringe_data.csv"
     main(input_csv_path)

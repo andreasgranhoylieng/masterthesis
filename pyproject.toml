@@ -1,0 +1,52 @@
+[tool.ruff]
+# Exclude a few common directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "runs", # Exclude ML run directories
+    "datasets", # Exclude datasets
+]
+
+# Same as Black.
+line-length = 88
+
+# Assume Python 3.9
+target-version = "py39"
+
+[tool.ruff.lint]
+# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
+# Also enable isort (`I`) for import sorting.
+select = ["E", "W", "F", "I"]
+ignore = []
+
+# Allow autofix for all enabled rules (when `--fix`) is used.
+fixable = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
+unfixable = []
+
+[tool.ruff.lint.isort]
+# Add any known third-party imports here if needed, otherwise ruff often detects them.
+# known-third-party = ["my_module"]
+
+[tool.nbqa.ruff]
+# Configuration specific to running ruff via nbqa can go here if needed
+# For example, to ignore certain rules only in notebooks:
+# ignore = ["E402"] # Module level import not at top of cell
