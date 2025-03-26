@@ -56,5 +56,5 @@ def main(csv_path: str) -> None:
 
 if __name__ == '__main__':
     # Define the path to the CSV file directly.
-    input_csv_path = "volume_estimation/syringe_data.csv" 
+    input_csv_path = "syringe_data.csv" 
     main(input_csv_path)
