@@ -5,7 +5,7 @@ This repository contains a system for syringe detection, tracking, and volume es
 ## Components
 
 1.  **Automatic Annotation (`dino/`)**: Uses GroundingDINO to generate initial annotations for training data.
-2.  **Syringe Tracking (`syringe_tracking/`)**: Detects and tracks syringes in video streams using YOLO and ByteTrack.
+2.  **Syringe Tracking (`syringe_tracking/`)**: Detects and tracks syringes in video streams using Ultralytics YOLOv11 and ByteTrack.
 3.  **Volume Estimation (`volume_estimation/`)**: Estimates syringe volume based on keypoint detection (plunger and barrel tip).
 
 ## Features

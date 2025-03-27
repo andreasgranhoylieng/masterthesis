@@ -1,6 +1,6 @@
 # Syringe Volume Estimation via Keypoint Detection
 
-This directory contains the system for estimating the liquid volume within a syringe by detecting keypoints (specifically the plunger tip and the barrel tip) using a YOLO-Pose model.
+This directory contains the system for estimating the liquid volume within a syringe by detecting keypoints (specifically the plunger tip and the barrel tip) using an Ultralytics YOLOv11-Pose model.
 
 ## Purpose
 
@@ -22,7 +22,7 @@ The core idea is to measure the distance between the detected plunger tip and ba
     Ensure you have a dataset suitable for training YOLO-Pose. Annotations should include keypoints for the plunger tip and barrel tip for each syringe instance.
 
 2.  **Train the Pose Model (Optional):**
-    If you need to train a custom pose estimation model, use the provided `train.py` script. This script utilizes the Ultralytics YOLO-Pose library.
+    If you need to train a custom pose estimation model, use the provided `train.py` script. This script utilizes the Ultralytics YOLOv11-Pose library.
     **Important:** Modify the parameters (like dataset path, model configuration, epochs, image size, etc.) directly *within* the `train.py` script itself.
     Once configured, execute the script from the terminal:
     ```bash

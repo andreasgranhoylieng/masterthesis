@@ -1,6 +1,6 @@
 # Syringe Detection and Tracking
 
-This directory contains the system for detecting and tracking syringes in video streams using the YOLO object detection model and the ByteTrack tracking algorithm.
+This directory contains the system for detecting and tracking syringes in video streams using the Ultralytics YOLOv11 object detection model and the ByteTrack tracking algorithm.
 
 ## Purpose
 
@@ -20,7 +20,7 @@ This module identifies syringe instances in each frame and assigns a consistent 
     Ensure you have a dataset suitable for training YOLO object detection. Annotations should be in YOLO format (typically `.txt` files alongside images). You might use the output from the `dino` module or datasets downloaded via `download_datasets.ipynb`.
 
 2.  **Train the Detection Model (Optional):**
-    If you need to train a custom detector, use the provided `train.py` script. This script utilizes the Ultralytics YOLO library.
+    If you need to train a custom detector, use the provided `train.py` script. This script utilizes the Ultralytics YOLOv11 library.
     **Important:** Modify the parameters (like dataset path, model configuration, epochs, image size, etc.) directly *within* the `train.py` script itself.
     Once configured, execute the script from the terminal:
     ```bash
