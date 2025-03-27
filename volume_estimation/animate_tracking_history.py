@@ -1,7 +1,7 @@
 # animate_tracking_history.py
 
 import argparse
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
@@ -45,14 +45,14 @@ def animate_tracking_history(csv_path: str, id_column: str) -> None:
              print("         Consider using '--id_column consistent_track_id'")
         elif id_column != DEFAULT_ID_COL and DEFAULT_ID_COL in df.columns:
              print(f"Warning: Specified ID column '{id_column}' not found, but default '{DEFAULT_ID_COL}' exists.")
-             
+
         print(f"Error: Missing required columns for animation: {missing_cols}")
         return
 
     # --- 3. Prepare Data for Animation ---
     # Ensure sorting by timestamp
     df.sort_values(TS_COL, inplace=True)
-    
+
     # Attempt to convert ID column to numeric, coercing errors to NaN.
     # This helps handle potential non-numeric entries gracefully.
     # Use Int64 which supports NaN if possible, otherwise float.
@@ -73,7 +73,7 @@ def animate_tracking_history(csv_path: str, id_column: str) -> None:
 
     # --- 4. Set up the Plot ---
     fig, ax = plt.subplots(figsize=(12, 9)) # Adjusted size
-    
+
     # Use a colormap for potentially many tracks
     colors = plt.cm.viridis(np.linspace(0, 1, len(track_ids_to_animate)))
     lines: Dict[Any, plt.Line2D] = {}
@@ -86,7 +86,7 @@ def animate_tracking_history(csv_path: str, id_column: str) -> None:
     def init() -> List[plt.Line2D]:
         """Initialize plot limits and clear lines."""
         margin: float = 20.0  # Adjust margin if needed
-        
+
         # Calculate bounds safely, handling cases with no valid data
         min_x, max_x = df[X_COL].dropna().min(), df[X_COL].dropna().max()
         min_y, max_y = df[Y_COL].dropna().min(), df[Y_COL].dropna().max()
@@ -98,10 +98,10 @@ def animate_tracking_history(csv_path: str, id_column: str) -> None:
         else:
              ax.set_xlim(min_x - margin, max_x + margin)
              ax.set_ylim(min_y - margin, max_y + margin)
-        
+
         # Invert y-axis assuming (0,0) is top-left (common in image/video)
         # Remove if your coordinate system has (0,0) at bottom-left
-        ax.invert_yaxis() 
+        ax.invert_yaxis()
 
         # Reset line data
         for line in lines.values():
@@ -111,7 +111,7 @@ def animate_tracking_history(csv_path: str, id_column: str) -> None:
     def update(frame: int) -> List[plt.Line2D]:
         """Update plot for the current frame (timestamp)."""
         current_time = unique_timestamps[frame]
-        
+
         # Filter cumulative data up to the current timestamp
         # Include only rows with valid coordinates and a valid ID in the specified column
         current_data = df[
@@ -120,17 +120,17 @@ def animate_tracking_history(csv_path: str, id_column: str) -> None:
             df[Y_COL].notna() &
             df[id_column].notna() # Use the specified ID column here
         ]
-        
+
         # Update data for each track line
         for track_id in track_ids_to_animate:
             # Filter data specific to this track ID using the specified column
-            track_data = current_data[current_data[id_column] == track_id] 
+            track_data = current_data[current_data[id_column] == track_id]
             x = track_data[X_COL].values
             y = track_data[Y_COL].values
             # Update the corresponding line object
             if track_id in lines: # Ensure line exists
                  lines[track_id].set_data(x, y)
-                 
+
         # Update the plot title dynamically
         ax.set_title(f"Timestamp: {current_time:.3f}")
         return list(lines.values())
@@ -141,7 +141,7 @@ def animate_tracking_history(csv_path: str, id_column: str) -> None:
     # 'interval' is the delay between frames in milliseconds.
     ani = animation.FuncAnimation(
         fig, update, frames=len(unique_timestamps),
-        init_func=init, blit=True, repeat=False, interval=50 
+        init_func=init, blit=True, repeat=False, interval=50
     )
 
     # Configure final plot appearance
@@ -151,7 +151,7 @@ def animate_tracking_history(csv_path: str, id_column: str) -> None:
     plt.title(f"{id_column.replace('_', ' ').title()} Paths Animation") # Dynamic main title
     plt.grid(True)
     plt.tight_layout()
-    
+
     # Display the animation window
     try:
         plt.show()
@@ -175,22 +175,22 @@ if __name__ == '__main__':
         description="Animate tracking history from a CSV file.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter # Show defaults in help message
     )
-    
+
     # Positional argument for the input file
     parser.add_argument(
-        "input_csv", 
+        "input_csv",
         help="Path to the input CSV file containing tracking data."
     )
-    
+
     # Optional argument for specifying the ID column
     parser.add_argument(
-        "--id_column", 
-        default=DEFAULT_ID_COL, 
-        help=f"Name of the column containing track IDs to animate. Use 'consistent_track_id' for data processed by the merging script."
+        "--id_column",
+        default=DEFAULT_ID_COL,
+        help="Name of the column containing track IDs to animate. Use 'consistent_track_id' for data processed by the merging script."
     )
-    
+
     # Parse the command-line arguments
     args = parser.parse_args()
-    
+
     # Run the animation function with the provided arguments
     animate_tracking_history(args.input_csv, args.id_column)
