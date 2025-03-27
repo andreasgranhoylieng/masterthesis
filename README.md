@@ -64,3 +64,4 @@ Each component resides in its own directory with specific instructions:
 ├── download_datasets.ipynb   # Notebook to download datasets
 ├── environment.yml           # Conda environment definition
 └── README.md                 # This file
+```
