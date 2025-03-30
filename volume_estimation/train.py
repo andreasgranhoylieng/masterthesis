@@ -3,7 +3,7 @@ from ultralytics import YOLO
 def str_to_bool(s: str) -> bool:
     return s.lower() in ["yes", "true", "1"]
 
-yolo_version = input("Which version of YOLO?: ")
+yolo_version = int(input("Which version of YOLO?: "))
 dataset_version = input("Enter the dataset version: ")
 model_type = input("Enter the model type (e.g., 'n', 's', 'm', 'l', 'x'): ")
 resume_input = input("Resume training? (True/False): ")
@@ -11,7 +11,7 @@ resume_input = input("Resume training? (True/False): ")
 resume = str_to_bool(resume_input)
 
 # Pick file extension based on model_type
-ext = ".yaml" if model_type.lower() == "n" else ".pt"
+ext = ".yaml" if yolo_version == 12 else ".pt"
 
 # Load the model
 if resume:
