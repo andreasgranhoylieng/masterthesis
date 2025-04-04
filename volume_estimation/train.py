@@ -24,7 +24,7 @@ train_args = {
     "data": "../datasets/Syringe-volume-estimation-yolo/data.yaml",
     "epochs": 10000,
     "imgsz": 1440,
-    "patience": 50,
+    "patience": 100,
     "workers": 32,
     "device": [0, 1, 2],
     "batch": 3 * 4,
