@@ -2,12 +2,12 @@ import csv
 import math
 import os
 import time
+from collections import deque
 
 import cv2
 import numpy as np
 import torch
 from ultralytics import YOLO
-from collections import deque
 
 
 class SyringeVolumeEstimator:
@@ -38,17 +38,17 @@ class SyringeVolumeEstimator:
         """Draw a table on the frame showing diameters and volumes with track ID."""
         table_width = 250
         table_height = 55+len(self.possible_diameters)*30  # For header, track ID, and 4 diameters
-        
+
         # Create a transparent overlay
         overlay = frame.copy()
-        
+
         # Draw light gray background on the overlay
         cv2.rectangle(overlay, (table_x, table_y), (table_x + table_width, table_y + table_height), (220, 220, 220), -1)
-        
+
         # Blend the overlay with the original frame to make it see-through
         alpha = 0.5  # Transparency factor
         cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
-        
+
         # Draw track ID
         cv2.putText(frame, f"Syringe ID: {track_id}", (table_x + 10, table_y + 20),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
@@ -68,10 +68,10 @@ class SyringeVolumeEstimator:
             else:
                 cv2.putText(frame, "N/A", (table_x + 150, y),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
-    
-    
+
+
     def draw_fps_counter(self, frame: np.ndarray) -> None:
-        
+
         """Draw a counter on the frame showing the average FPS."""
         current_timestamp = time.time()
         self.last_timestamps.append(current_timestamp)
@@ -80,23 +80,23 @@ class SyringeVolumeEstimator:
             time_diffs = [t2 - t1 for t1, t2 in zip(self.last_timestamps, list(self.last_timestamps)[1:])]
             avg_time = sum(time_diffs) / len(time_diffs)
             avg_fps = 1 / avg_time if avg_time > 0 else 0
-            
+
             # Add white background rectangle
             text = f"FPS: {avg_fps:.2f}"
             (text_width, text_height), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)
             cv2.rectangle(frame, (8, 10), (text_width + 12, 40), (255, 255, 255), -1)
-            
+
             # Draw text
             cv2.putText(frame, text, (10, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
-        
-        
+
+
 
     def process_frame(self, frame: np.ndarray, timestamp: float, writer: csv.writer) -> np.ndarray:
-        
+
         """Process a frame to detect syringes, calculate volumes, log data, and draw tables."""
-        
-        
+
+
         if self.crop_image:
             # Crop the frame to the center square (1440x1440)
             h, w = frame.shape[:2]
@@ -107,27 +107,27 @@ class SyringeVolumeEstimator:
                 margin = (w - h) // 2
                 frame = frame[:, margin:margin + h]
             frame = cv2.resize(frame, (1440, 1440))
-        
+
         # Draw FPS counter
         self.draw_fps_counter(frame)
-            
+
         # Define the desired inference image size (matching your training size)
-        
+
 
         # Perform object detection and tracking
         if self.crop_image:
-            results = self.model.track(source=frame, 
-                                       persist=True, 
-                                       tracker='bytetrack.yaml', 
-                                       verbose=False, 
-                                       conf=0.4, 
+            results = self.model.track(source=frame,
+                                       persist=True,
+                                       tracker='bytetrack.yaml',
+                                       verbose=False,
+                                       conf=0.4,
                                        imgsz=self.inference_size,
                                        )
         else:
-            results = self.model.track(source=frame, 
-                                       persist=True, 
-                                       tracker='bytetrack.yaml', 
-                                       verbose=False, 
+            results = self.model.track(source=frame,
+                                       persist=True,
+                                       tracker='bytetrack.yaml',
+                                       verbose=False,
                                        conf=0.5,
                                        )
 
@@ -196,18 +196,18 @@ class SyringeVolumeEstimator:
             except Exception as e:
                 print(f"Error processing syringe {track_id}: {e}")
                 continue
-        
-        
+
+
 
         return annotated_frame
 
     def run(self, input_source='webcam', video_path=None, csv_path='syringe_data.csv'):
         """Run the main loop to process frames from webcam or video, saving data and optionally video."""
-        
+
         # Delete existing CSV file if it exists
         if os.path.exists(csv_path):
             os.remove(csv_path)
-        
+
 
         # Set up video capture based on input source
         if input_source == 'video':
@@ -222,7 +222,7 @@ class SyringeVolumeEstimator:
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
             base, ext = os.path.splitext(video_path)
             output_path = f"{base}_processed{ext}"
-            
+
             if self.save_video:
                 out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
             else:
@@ -281,4 +281,4 @@ if __name__ == "__main__":
     # Example usage for webcam
     # estimator.run(input_source='webcam')
     # Example usage for video
-    # estimator.run(input_source='video', video_path='IMG_4952.mov') 
+    # estimator.run(input_source='video', video_path='IMG_4952.mov')

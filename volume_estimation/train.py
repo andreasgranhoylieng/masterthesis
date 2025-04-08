@@ -1,5 +1,6 @@
 from ultralytics import YOLO
 
+
 def str_to_bool(s: str) -> bool:
     return s.lower() in ["yes", "true", "1"]
 
