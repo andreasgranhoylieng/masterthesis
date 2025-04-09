@@ -10,14 +10,43 @@ import torch
 from ultralytics import YOLO
 
 
-class SyringeVolumeEstimator:
-    def __init__(self, aoi_rects=None, area_threshold=0.9): # Changed threshold name
+# --- Define the Active Zone class ---
+class ActiveZone:
+    """Represents a named rectangular area of interest."""
+    def __init__(self, name: str, rect: tuple):
         """
-        Initialize the YOLO model, device, AOIs, and other parameters.
+        Initializes an ActiveZone.
 
         Args:
-            aoi_rects (list, optional): A list of tuples defining AOI rectangles
-                                       in (x1, y1, x2, y2) format. Defaults to None.
+            name (str): A unique name for the zone (e.g., "Disposal Bin", "Prep Area").
+            rect (tuple): A tuple defining the zone rectangle in (x1, y1, x2, y2) format.
+        """
+        if not isinstance(name, str) or not name:
+            raise ValueError("ActiveZone name must be a non-empty string.")
+        if not (isinstance(rect, tuple) or isinstance(rect, list)) or len(rect) != 4:
+            raise ValueError("ActiveZone rect must be a tuple or list of 4 numbers.")
+        try:
+            self.rect = tuple(map(int, rect)) # Ensure coordinates are integers
+            if not (self.rect[0] < self.rect[2] and self.rect[1] < self.rect[3]):
+                 raise ValueError("Rectangle coordinates must be (x1, y1, x2, y2) with x1 < x2 and y1 < y2.")
+        except (ValueError, TypeError) as e:
+             raise ValueError(f"Invalid rectangle coordinates: {rect}. {e}")
+
+        self.name = name
+
+    def __repr__(self):
+        return f"ActiveZone(name='{self.name}', rect={self.rect})"
+# --- End Active Zone class ---
+
+
+class SyringeVolumeEstimator:
+    def __init__(self, active_zones=None, area_threshold=0.9): # Changed parameter name
+        """
+        Initialize the YOLO model, device, ActiveZones, and other parameters.
+
+        Args:
+            active_zones (list[ActiveZone], optional): A list of ActiveZone objects.
+                                                       Defaults to None (no active zones).
             area_threshold (float, optional): The minimum proportion of the syringe's
                                               bounding box area that must be inside an AOI
                                               to trigger 'in active zone'. Defaults to 0.9 (90%).
@@ -43,11 +72,19 @@ class SyringeVolumeEstimator:
         # Save video after processing
         self.save_video = False
 
-        # --- Area of Interest (AOI) settings ---
-        self.aoi_rects = aoi_rects if aoi_rects is not None else [] # List of (x1, y1, x2, y2) tuples
-        self.area_threshold = area_threshold # Use the new threshold
-        # Ensure AOI coordinates are integers
-        self.aoi_rects = [tuple(map(int, rect)) for rect in self.aoi_rects]
+        # --- Area of Interest (AOI) settings using ActiveZone class ---
+        self.active_zones = active_zones if active_zones is not None else [] # List of ActiveZone objects
+        # Validate input is a list of ActiveZone objects
+        if not isinstance(self.active_zones, list) or not all(isinstance(zone, ActiveZone) for zone in self.active_zones):
+             raise TypeError("active_zones must be a list of ActiveZone objects.")
+        # Check for duplicate names
+        zone_names = [zone.name for zone in self.active_zones]
+        if len(zone_names) != len(set(zone_names)):
+            print("Warning: Duplicate names found in active_zones. Using the first occurrence.")
+            # Optionally, raise an error or handle duplicates differently
+            # raise ValueError("ActiveZone names must be unique.")
+
+        self.area_threshold = area_threshold
         # --- End AOI settings ---
 
     # Removed calculate_iou as it's not needed for the new logic
@@ -110,8 +147,8 @@ class SyringeVolumeEstimator:
 
     def process_frame(self, frame: np.ndarray, timestamp: float, writer: csv.writer) -> np.ndarray:
         """
-        Process a frame: detect syringes, check AOI overlap (area based),
-        calculate volumes, log data, and draw annotations (coloring active boxes green).
+        Process a frame: detect syringes, check ActiveZone overlap (area based),
+        calculate volumes, log data (including zone name), and draw annotations.
         """
 
         original_frame_height, original_frame_width = frame.shape[:2]
@@ -127,13 +164,16 @@ class SyringeVolumeEstimator:
                 frame = frame[:, margin:margin + h]
             frame = cv2.resize(frame, (1440, 1440))
 
-        # --- Draw AOIs ---
-        display_frame = frame.copy() # Work on a copy for drawing AOIs before detection plots
-        for aoi in self.aoi_rects:
-            cv2.rectangle(display_frame, (aoi[0], aoi[1]), (aoi[2], aoi[3]), (255, 0, 255), 2) # Magenta color for AOI
-            # Optional: Add text label to AOI
-            # cv2.putText(display_frame, "AOI", (aoi[0], aoi[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 255), 2)
-        # --- End Draw AOIs ---
+        # --- Draw Active Zones ---
+        display_frame = frame.copy() # Work on a copy for drawing Zones before detection plots
+        for zone in self.active_zones:
+            x1, y1, x2, y2 = zone.rect
+            cv2.rectangle(display_frame, (x1, y1), (x2, y2), (255, 0, 255), 2) # Magenta color for Zone
+            # Add text label with the zone name
+            label_y = y1 - 10 if y1 > 20 else y1 + 20 # Adjust label position based on zone y-coordinate
+            cv2.putText(display_frame, zone.name, (x1, label_y),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 255), 2)
+        # --- End Draw Active Zones ---
 
         # Draw FPS counter on the display frame
         self.draw_fps_counter(display_frame)
@@ -156,48 +196,53 @@ class SyringeVolumeEstimator:
                                        )
 
         # Plot results onto the display_frame (draws default boxes, labels, keypoints etc.)
-        # We will overwrite the box color later if needed.
         annotated_frame = results[0].plot(img=display_frame)
 
         # Check if there are no results or if there are no detection boxes
         if not results or (hasattr(results[0], "boxes") and len(results[0].boxes) == 0):
             # Log an empty row with NaN values for detection details
-            row = [timestamp, np.nan, np.nan, np.nan] + [np.nan for _ in self.possible_diameters] + [np.nan]
+            # Add placeholder for zone name
+            row = [timestamp, np.nan, np.nan, np.nan] + [np.nan for _ in self.possible_diameters] + ['N/A', 0]
             writer.writerow(row)
-            return annotated_frame # Return frame with AOIs and FPS drawn
+            return annotated_frame # Return frame with Zones and FPS drawn
 
         result = results[0]
         any_syringe_in_active_zone = False # Frame-level flag
-        active_zone_status = {} # Store status for each box index
+        active_zone_status = {} # Store status (True/False) for each box index
+        detected_zone_names = {} # Store name of the detected zone for each box index
 
         # Process each detected syringe (first pass for calculations and logging)
         for i, box in enumerate(result.boxes):
             in_active_zone = False # Syringe-level flag for this specific syringe
+            detected_zone_name = "Outside" # Default zone name
 
             # Extract track ID, assign -1 if not available
             track_id = int(box.id) if box.id is not None else -1
 
             # Extract bounding box coordinates
             box_coords = box.xyxy[0].cpu().numpy()
-            x1, y1, x2, y2 = map(int, box_coords)
-            syringe_bbox = (x1, y1, x2, y2) # Bbox for calculation
+            x1_syr, y1_syr, x2_syr, y2_syr = map(int, box_coords)
+            syringe_bbox = (x1_syr, y1_syr, x2_syr, y2_syr) # Bbox for calculation
 
-            center_x = (x1 + x2) / 2
-            center_y = (y1 + y2) / 2
+            center_x = (x1_syr + x2_syr) / 2
+            center_y = (y1_syr + y2_syr) / 2
 
             # Calculate syringe bounding box area
-            syringe_box_w = x2 - x1
-            syringe_box_h = y2 - y1
+            syringe_box_w = x2_syr - x1_syr
+            syringe_box_h = y2_syr - y1_syr
             syringe_box_area = float(syringe_box_w * syringe_box_h)
 
-            # --- Check AOI overlap (Area based) ---
+            # --- Check Active Zone overlap (Area based) ---
             if syringe_box_area > 0: # Avoid division by zero if box is invalid
-                for aoi in self.aoi_rects:
+                for zone in self.active_zones:
+                    # Get zone rectangle
+                    x1_zone, y1_zone, x2_zone, y2_zone = zone.rect
+
                     # Calculate intersection rectangle
-                    inter_x1 = max(syringe_bbox[0], aoi[0])
-                    inter_y1 = max(syringe_bbox[1], aoi[1])
-                    inter_x2 = min(syringe_bbox[2], aoi[2])
-                    inter_y2 = min(syringe_bbox[3], aoi[3])
+                    inter_x1 = max(syringe_bbox[0], x1_zone)
+                    inter_y1 = max(syringe_bbox[1], y1_zone)
+                    inter_x2 = min(syringe_bbox[2], x2_zone)
+                    inter_y2 = min(syringe_bbox[3], y2_zone)
 
                     # Calculate intersection area
                     inter_w = max(0, inter_x2 - inter_x1)
@@ -208,17 +253,21 @@ class SyringeVolumeEstimator:
                     if (intersection_area / syringe_box_area) > self.area_threshold:
                         in_active_zone = True
                         any_syringe_in_active_zone = True
-                        break # No need to check other AOIs for this syringe
+                        detected_zone_name = zone.name # Store the name of the zone
+                        break # Found the zone for this syringe, no need to check others
 
             active_zone_status[i] = in_active_zone # Store status by index
-            # --- End Check AOI overlap ---
+            detected_zone_names[i] = detected_zone_name # Store zone name by index
+            # --- End Check Active Zone overlap ---
 
             # Verify keypoints availability
             if result.keypoints is None or len(result.keypoints.xy) <= i or len(result.keypoints.xy[i]) < 4:
-                # Log data even if keypoints are missing, indicate zone status
+                # Log data even if keypoints are missing, indicate zone status and name
                 volumes = [np.nan] * len(self.possible_diameters)
-                # Use stored status for logging
-                row = [timestamp, track_id, center_x, center_y] + volumes + [1 if active_zone_status.get(i, False) else 0]
+                # Use stored status and name for logging
+                current_zone_name = detected_zone_names.get(i, "Outside") # Default if somehow missing
+                is_in_zone_flag = 1 if active_zone_status.get(i, False) else 0
+                row = [timestamp, track_id, center_x, center_y] + volumes + [current_zone_name, is_in_zone_flag]
                 writer.writerow(row)
                 continue # Skip volume calculation for this syringe
 
@@ -228,9 +277,11 @@ class SyringeVolumeEstimator:
                 ll_point, ul_point, ur_point, lr_point = kpts[:4]  # Lower-left, upper-left, upper-right, lower-right
             except Exception as e:
                 print(f"Error extracting keypoints for syringe {track_id}: {e}")
-                 # Log data even if keypoint extraction fails, indicate zone status
+                 # Log data even if keypoint extraction fails, indicate zone status and name
                 volumes = [np.nan] * len(self.possible_diameters)
-                row = [timestamp, track_id, center_x, center_y] + volumes + [1 if active_zone_status.get(i, False) else 0]
+                current_zone_name = detected_zone_names.get(i, "Outside")
+                is_in_zone_flag = 1 if active_zone_status.get(i, False) else 0
+                row = [timestamp, track_id, center_x, center_y] + volumes + [current_zone_name, is_in_zone_flag]
                 writer.writerow(row)
                 continue # Skip volume calculation
 
@@ -240,9 +291,11 @@ class SyringeVolumeEstimator:
                 width_pixels = (np.linalg.norm(lr_point - ll_point) + np.linalg.norm(ur_point - ul_point)) / 2
                 height_pixels = (np.linalg.norm(ul_point - ll_point) + np.linalg.norm(ur_point - lr_point)) / 2
                 if width_pixels <= 0 or height_pixels <= 0:
-                     # Log data even if dimensions are invalid, indicate zone status
+                     # Log data even if dimensions are invalid, indicate zone status and name
                     volumes = [np.nan] * len(self.possible_diameters)
-                    row = [timestamp, track_id, center_x, center_y] + volumes + [1 if active_zone_status.get(i, False) else 0]
+                    current_zone_name = detected_zone_names.get(i, "Outside")
+                    is_in_zone_flag = 1 if active_zone_status.get(i, False) else 0
+                    row = [timestamp, track_id, center_x, center_y] + volumes + [current_zone_name, is_in_zone_flag]
                     writer.writerow(row)
                     continue
 
@@ -257,20 +310,24 @@ class SyringeVolumeEstimator:
                         volume_D = float('nan')
                     volumes.append(volume_D)
 
-                # Log data to CSV (including active zone status)
-                row = [timestamp, track_id, center_x, center_y] + volumes + [1 if active_zone_status.get(i, False) else 0]
+                # Log data to CSV (including active zone status and name)
+                current_zone_name = detected_zone_names.get(i, "Outside")
+                is_in_zone_flag = 1 if active_zone_status.get(i, False) else 0
+                row = [timestamp, track_id, center_x, center_y] + volumes + [current_zone_name, is_in_zone_flag]
                 writer.writerow(row)
 
                 # Draw volume table
-                table_x = x2 + 10  # Right of bounding box
-                table_y = y1       # Top of bounding box
+                table_x = x2_syr + 10  # Right of bounding box
+                table_y = y1_syr       # Top of bounding box
                 self.draw_volume_table(annotated_frame, list(zip(self.possible_diameters, volumes)), table_x, table_y, track_id)
 
             except Exception as e:
                 print(f"Error processing syringe {track_id}: {e}")
-                # Log data even if volume calculation fails, indicate zone status
+                # Log data even if volume calculation fails, indicate zone status and name
                 volumes = [np.nan] * len(self.possible_diameters)
-                row = [timestamp, track_id, center_x, center_y] + volumes + [1 if active_zone_status.get(i, False) else 0]
+                current_zone_name = detected_zone_names.get(i, "Outside")
+                is_in_zone_flag = 1 if active_zone_status.get(i, False) else 0
+                row = [timestamp, track_id, center_x, center_y] + volumes + [current_zone_name, is_in_zone_flag]
                 writer.writerow(row)
                 continue
 
@@ -285,6 +342,11 @@ class SyringeVolumeEstimator:
                     x1, y1, x2, y2 = map(int, box_coords)
                     # Draw a green rectangle over the one drawn by plot()
                     cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), (0, 255, 0), 2) # Green color, thickness 2
+                    # Optionally, add the zone name to the box label (might get cluttered)
+                    # zone_name_label = detected_zone_names.get(i, "")
+                    # label_text = f"ID:{int(box.id)} {zone_name_label}" # Example combining ID and zone
+                    # cv2.putText(annotated_frame, zone_name_label, (x1, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+
         # --- End Redraw ---
 
 
@@ -304,14 +366,16 @@ class SyringeVolumeEstimator:
 
         return annotated_frame
 
-    # The 'run' method remains unchanged from the previous version,
-    # except for the CSV header which was already updated correctly.
     def run(self, input_source='webcam', video_path=None, csv_path='syringe_data.csv'):
         """Run the main loop to process frames from webcam or video, saving data and optionally video."""
 
         # Delete existing CSV file if it exists
         if os.path.exists(csv_path):
-            os.remove(csv_path)
+            try:
+                os.remove(csv_path)
+                print(f"Removed existing CSV file: {csv_path}")
+            except OSError as e:
+                print(f"Error removing file {csv_path}: {e}. Appending data instead.")
 
 
         # Set up video capture based on input source
@@ -353,13 +417,16 @@ class SyringeVolumeEstimator:
             raise IOError(f"Cannot open {'video file' if input_source == 'video' else 'webcam'}")
 
         # Open CSV file for logging
+        file_exists = os.path.exists(csv_path) and os.path.getsize(csv_path) > 0
         with open(csv_path, 'a', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            # Write header if file is new or empty
-            if not os.path.exists(csv_path) or os.path.getsize(csv_path) == 0:
+            # Write header only if file is new/empty
+            if not file_exists:
+                # --- Updated Header ---
                 header = ['timestamp', 'track_id', 'center_x', 'center_y'] + \
                          [f'volume_D{D}' for D in self.possible_diameters] + \
-                         ['in_active_zone'] # Header remains correct
+                         ['zone_name', 'in_active_zone'] # Added zone_name
+                # --- End Updated Header ---
                 writer.writerow(header)
 
             try:
@@ -402,7 +469,7 @@ class SyringeVolumeEstimator:
             finally:
                 print("Releasing resources...")
                 cap.release()
-                if out is not None:
+                if out is not None and self.save_video:
                     out.release()
                     print("Output video saved.")
                 cv2.destroyAllWindows()
@@ -410,33 +477,48 @@ class SyringeVolumeEstimator:
 
 
 if __name__ == "__main__":
-    # --- Define your Areas of Interest here ---
-    # Example AOIs (replace with your actual coordinates based on frame size)
+    # --- Define your Areas of Interest using the ActiveZone class ---
     # Use coordinates relative to the frame resolution being processed by YOLO
     # (e.g., original webcam resolution if crop_image=False, or 1440x1440 if crop_image=True)
 
-    # Example for a 1920x1080 frame (or similar):
-    aoi_list = [
-        (100, 100, 500, 980),   # A tall rectangle on the left
-        (1400, 600, 1800, 1000) # Bottom-right area
-    ]
+    # Example for a 1920x1080 frame (adjust coordinates as needed):
+    try:
+        zone_list = [
+            ActiveZone(name="Abdomen", rect=(100, 100, 500, 980)),    # A tall rectangle on the left
+            ActiveZone(name="Head", rect=(1400, 600, 1800, 1000)) # Bottom-right area
+        ]
+    except ValueError as e:
+        print(f"Error creating ActiveZone: {e}")
+        zone_list = [] # Fallback to empty list if definition is wrong
+
 
     # Example for a 3840x2160 (4K) frame:
-    # aoi_list = [
-    #     (500, 500, 1500, 1500),    # An area somewhere in the upper-left region
-    #     (2500, 1000, 3500, 2000)   # An area somewhere in the lower-right region
-    # ]
-    # If you don't want any AOIs, use: aoi_list = []
+    # try:
+    #     zone_list = [
+    #         ActiveZone(name="Microscope Zone", rect=(500, 500, 1500, 1500)),    # An area somewhere in the upper-left region
+    #         ActiveZone(name="Waste Chute", rect=(2500, 1000, 3500, 2000))   # An area somewhere in the lower-right region
+    #     ]
+    # except ValueError as e:
+    #     print(f"Error creating ActiveZone: {e}")
+    #     zone_list = []
+
+    # If you don't want any AOIs, use: zone_list = []
     # -------------------------------------------
 
-    # Instantiate the estimator with the defined AOIs and area threshold (e.g. 90%)
-    estimator = SyringeVolumeEstimator(aoi_rects=aoi_list, area_threshold=0.9) # 0.9 means 90%
+    # Instantiate the estimator with the defined ActiveZones and area threshold (e.g. 90%)
+    try:
+        estimator = SyringeVolumeEstimator(active_zones=zone_list, area_threshold=0.9) # Pass list of objects
 
-    # --- Choose how to run ---
-    # Option 1: Webcam
-    estimator.run(input_source='webcam', csv_path='webcam_syringe_data_area.csv')
+        # --- Choose how to run ---
+        # Option 1: Webcam
+        estimator.run(input_source='webcam', csv_path='webcam_syringe_data.csv') # New CSV name
 
-    # Option 2: Video File
-    # estimator.save_video = True # Set to True if you want to save the processed video
-    # estimator.run(input_source='video', video_path='your_video.mov', csv_path='video_syringe_data_area.csv')
-    # -------------------------
+        # Option 2: Video File
+        # estimator.save_video = True # Set to True if you want to save the processed video
+        # estimator.run(input_source='video', video_path='your_video.mov', csv_path='video_syringe_data_zones.csv') # New CSV name
+        # -------------------------
+
+    except (TypeError, ValueError) as e:
+         print(f"Error initializing SyringeVolumeEstimator: {e}")
+    except Exception as e:
+         print(f"An unexpected error occurred: {e}")
