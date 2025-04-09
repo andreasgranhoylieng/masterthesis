@@ -479,9 +479,8 @@ class SyringeVolumeEstimator:
 if __name__ == "__main__":
     # --- Define your Areas of Interest using the ActiveZone class ---
     # Use coordinates relative to the frame resolution being processed by YOLO
-    # (e.g., original webcam resolution if crop_image=False, or 1440x1440 if crop_image=True)
 
-    # Example for a 1920x1080 frame (adjust coordinates as needed):
+    # Example zones:
     try:
         zone_list = [
             ActiveZone(name="Abdomen", rect=(100, 100, 500, 980)),    # A tall rectangle on the left
@@ -492,30 +491,17 @@ if __name__ == "__main__":
         zone_list = [] # Fallback to empty list if definition is wrong
 
 
-    # Example for a 3840x2160 (4K) frame:
-    # try:
-    #     zone_list = [
-    #         ActiveZone(name="Microscope Zone", rect=(500, 500, 1500, 1500)),    # An area somewhere in the upper-left region
-    #         ActiveZone(name="Waste Chute", rect=(2500, 1000, 3500, 2000))   # An area somewhere in the lower-right region
-    #     ]
-    # except ValueError as e:
-    #     print(f"Error creating ActiveZone: {e}")
-    #     zone_list = []
-
-    # If you don't want any AOIs, use: zone_list = []
-    # -------------------------------------------
-
     # Instantiate the estimator with the defined ActiveZones and area threshold (e.g. 90%)
     try:
         estimator = SyringeVolumeEstimator(active_zones=zone_list, area_threshold=0.9) # Pass list of objects
 
         # --- Choose how to run ---
         # Option 1: Webcam
-        estimator.run(input_source='webcam', csv_path='webcam_syringe_data.csv') # New CSV name
+        estimator.run(input_source='webcam', csv_path='webcam_syringe_data.csv') 
 
         # Option 2: Video File
         # estimator.save_video = True # Set to True if you want to save the processed video
-        # estimator.run(input_source='video', video_path='your_video.mov', csv_path='video_syringe_data_zones.csv') # New CSV name
+        # estimator.run(input_source='video', video_path='videos/1x/1.0-0ml.mov', csv_path='video_syringe_data.csv')
         # -------------------------
 
     except (TypeError, ValueError) as e:
