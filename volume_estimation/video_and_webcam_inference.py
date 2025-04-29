@@ -184,7 +184,7 @@ class SyringeVolumeEstimator:
                                        persist=True,
                                        tracker='bytetrack.yaml',
                                        verbose=False,
-                                       conf=0.4,
+                                       conf=0.7,
                                        imgsz=self.inference_size,
                                        )
         else:
@@ -192,7 +192,7 @@ class SyringeVolumeEstimator:
                                        persist=True,
                                        tracker='bytetrack.yaml',
                                        verbose=False,
-                                       conf=0.5,
+                                       conf=0.7,
                                        )
 
         # Plot results onto the display_frame (draws default boxes, labels, keypoints etc.)
