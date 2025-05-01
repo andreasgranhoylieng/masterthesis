@@ -64,13 +64,7 @@ class SyringeVolumeEstimator:
         self.model_path = model_path
         if not os.path.exists(self.model_path):
              # Attempt a fallback or raise an error
-             fallback_path = "yolov8n-pose.pt" # Standard YOLOv8 Nano Pose model
-             print(f"Warning: Model not found at '{self.model_path}'.")
-             if os.path.exists(fallback_path):
-                 print(f"Attempting to use fallback model: '{fallback_path}'")
-                 self.model_path = fallback_path
-             else:
-                 raise FileNotFoundError(f"Specified model '{self.model_path}' not found, and fallback '{fallback_path}' also not found.")
+             raise FileNotFoundError(f"Model file not found: {self.model_path}. Please check the path.")
 
         try:
             self.model = YOLO(self.model_path).eval()
