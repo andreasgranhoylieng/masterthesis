@@ -923,12 +923,19 @@ if __name__ == "__main__":
     SYRINGE_TABLE_ZONE_NAMES = ["Table Zone 1", "Table Zone 2", "Table Zone 3", "Table Zone 4"]
     # Add other zones like disposal if needed
     # *** UPDATE SYRINGE COORDINATES *** (Relative to Syringe Camera Frame)
+    
+    gap = 10  # pixels
+    zone_width = 420
+    zone_height = 600  # vertical height
+
+    bottom = VIDEO_FRAME_HEIGHT - 50
+    top = bottom - zone_height
+
     SYRINGE_ZONE_DEFINITIONS = [
-        ActiveZone(name="Table Zone 1", rect=(100, VIDEO_FRAME_HEIGHT - 250, 300, VIDEO_FRAME_HEIGHT - 50)), # Example Bottom area
-        ActiveZone(name="Table Zone 2", rect=(350, VIDEO_FRAME_HEIGHT - 250, 550, VIDEO_FRAME_HEIGHT - 50)), # Example Bottom area
-        ActiveZone(name="Table Zone 3", rect=(600, VIDEO_FRAME_HEIGHT - 250, 800, VIDEO_FRAME_HEIGHT - 50)), # Example Bottom area
-        ActiveZone(name="Table Zone 4", rect=(850, VIDEO_FRAME_HEIGHT - 250, 1050, VIDEO_FRAME_HEIGHT - 50)),# Example Bottom area
-        # ActiveZone(name="Disposal Area", rect=(...))
+        ActiveZone(name="Table Zone 1", rect=(100, top, 100 + zone_width, bottom)),
+        ActiveZone(name="Table Zone 2", rect=(100 + zone_width + gap, top, 100 + 2 * zone_width + gap, bottom)),
+        ActiveZone(name="Table Zone 3", rect=(100 + 2 * (zone_width + gap), top, 100 + 3 * zone_width + 2 * gap, bottom)),
+        ActiveZone(name="Table Zone 4", rect=(100 + 3 * (zone_width + gap), top, 100 + 4 * zone_width + 3 * gap, bottom)),
     ]
 
     # 6. DEFINE THE CORRECT WORKFLOW STEPS FOR THIS TEST RUN
