@@ -164,7 +164,7 @@ class SyringeVolumeEstimator:
         fps_prefix=f"{camera_source.capitalize()} FPS"; self.draw_fps_counter(annotated_frame, prefix=fps_prefix)
         processed_detections=[]; results_data=None
         try:
-            results=self.model.track(source=frame,persist=True,tracker="bytetrack.yaml",verbose=False,conf=0.5,device=self.device,classes=[0])
+            results=self.model.track(source=frame,persist=True,tracker="bytetrack.yaml",verbose=False,conf=0.3,device=self.device,classes=[0])
             if results and len(results) > 0: results_data=results[0].cpu(); annotated_frame=results_data.plot(img=annotated_frame, line_width=1, font_size=0.4)
             else: return annotated_frame, []
         except Exception as e:
@@ -627,15 +627,17 @@ if __name__ == "__main__":
 
     # ----- Configuration: USER MUST EDIT THESE VALUES -----
     YOLO_MODEL_PATH = "runs/pose/train-pose11n-v30/weights/best.pt" # *** EDIT HERE ***
-    POSSIBLE_SYRINGE_DIAMETERS_CM = [0.45, 1.0, 1.25, 1.9] # *** EDIT HERE ***
-    MANIKIN_CAMERA_INDEX = 0    # *** EDIT HERE ***
-    SYRINGES_CAMERA_INDEX = 1   # *** EDIT HERE ***
+    POSSIBLE_SYRINGE_DIAMETERS_CM = [0.45, 1.0, 1.25, 2.0] # *** EDIT HERE ***
+    MANIKIN_CAMERA_INDEX = 1    # *** EDIT HERE ***
+    SYRINGES_CAMERA_INDEX = 0   # *** EDIT HERE ***
 
-    MANIKIN_TARGET_ZONE_NAMES = ["Abdomen", "Head"] # *** EDIT HERE ***
+    MANIKIN_TARGET_ZONE_NAMES = ["Arm", "Abdomen", "Foot"] # *** EDIT HERE ***
     MANIKIN_FRAME_W, MANIKIN_FRAME_H = 1920, 1080 # Example frame size for coordinate reference
     MANIKIN_ZONE_DEFINITIONS = [
-        ActiveZone(name="Abdomen", rect=(50, 200, 450, 800)),     # *** EDIT HERE ***
-        ActiveZone(name="Head", rect=(MANIKIN_FRAME_W - 450, 200, MANIKIN_FRAME_W - 50, 800)) # *** EDIT HERE ***
+        ActiveZone(name="Arm", rect=(50, 200, 450, 800)),      # Keep or adjust coordinates
+        ActiveZone(name="Abdomen", rect=(MANIKIN_FRAME_W - 450, 200, MANIKIN_FRAME_W - 50, 800)), # Keep or adjust coordinates
+        ActiveZone(name="Foot", rect=(100, MANIKIN_FRAME_H - 250, 500, MANIKIN_FRAME_H - 50)) # *** ADDED FOOT ZONE - Adjust coordinates ***
+        # Example coordinates for Foot (bottom-left area): (x1=100, y1=830, x2=500, y2=1030)
     ]
 
     SYRINGE_TABLE_ZONE_NAMES = ["Table Zone 1", "Table Zone 2", "Table Zone 3", "Table Zone 4"] # *** EDIT HERE ***
@@ -648,18 +650,18 @@ if __name__ == "__main__":
         ActiveZone(name="Table Zone 4", rect=(100 + 3 * (zone_width + gap), top, 100 + 4 * zone_width + 3 * gap, bottom)), # *** EDIT HERE ***
     ]
 
-    CORRECT_STARTING_ZONE = "Table Zone 2"      # *** EDIT HERE ***
-    CORRECT_SYRINGE_DIAMETER_CM = 1.0           # *** EDIT HERE ***
-    TARGET_VOLUME_ML = 2.0                      # *** EDIT HERE ***
-    VOLUME_TOLERANCE_ML = 0.75                  # *** EDIT HERE ***
-    CORRECT_TARGET_ZONE = "Abdomen"             # *** EDIT HERE ***
+    CORRECT_STARTING_ZONE = "Table Zone 4"      # *** EDIT HERE ***
+    CORRECT_SYRINGE_DIAMETER_CM = 2.0           # *** EDIT HERE ***
+    TARGET_VOLUME_ML = 15.0                      # *** EDIT HERE ***
+    VOLUME_TOLERANCE_ML = 5                  # *** EDIT HERE ***
+    CORRECT_TARGET_ZONE = "Foot"             # *** EDIT HERE ***
 
     # --- Timeouts Removed ---
     # PICKUP_INSERT_TIMEOUT = 15.0
     # INSERT_RETURN_TIMEOUT = 25.0
     # SYRINGE_PURGE_TIMEOUT = 20.0
 
-    SAVE_OUTPUT_VIDEO = False # *** EDIT HERE ***
+    SAVE_OUTPUT_VIDEO = True # *** EDIT HERE ***
     OUTPUT_VIDEO_PATH_MANIKIN = "manikin_processed.mp4"
     OUTPUT_VIDEO_PATH_SYRINGES = "syringes_processed.mp4"
     RAW_CSV_PATH = 'syringe_volume_data_raw_combined.csv'
