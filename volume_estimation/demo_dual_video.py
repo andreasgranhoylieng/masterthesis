@@ -172,7 +172,7 @@ class SyringeVolumeEstimator:
 
         processed_detections=[]; results_data=None
         try:
-            results=self.model.track(source=frame,persist=True,tracker="bytetrack.yaml",verbose=False,conf=0.3,device=self.device,classes=[0])
+            results=self.model.track(source=frame,persist=True,tracker="bytetrack.yaml",verbose=False,conf=0.6,device=self.device,classes=[0])
             if results and len(results) > 0: results_data=results[0].cpu(); annotated_frame=results_data.plot(img=annotated_frame, line_width=1, font_size=0.4)
             else: return annotated_frame, []
         except Exception as e:
@@ -639,8 +639,8 @@ if __name__ == "__main__":
     POSSIBLE_SYRINGE_DIAMETERS_CM = [0.45, 1.0, 1.25, 2.0] # *** EDIT HERE ***
 
     # --- VIDEO FILE INPUT ---
-    MANIKIN_VIDEO_PATH = "manikin_processed.mp4"  # *** EDIT HERE: Path to the manikin perspective video ***
-    SYRINGES_VIDEO_PATH = "syringes_processed.mp4" # *** EDIT HERE: Path to the table/syringes perspective video ***
+    MANIKIN_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/cam1_20250505_165219.mp4"  # *** EDIT HERE: Path to the manikin perspective video ***
+    SYRINGES_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/cam0_20250505_165219.mp4" # *** EDIT HERE: Path to the table/syringes perspective video ***
     # --- Camera Indices Removed ---
     # MANIKIN_CAMERA_INDEX = 1
     # SYRINGES_CAMERA_INDEX = 0
@@ -651,27 +651,27 @@ if __name__ == "__main__":
     MANIKIN_TARGET_ZONE_NAMES = ["Arm", "Abdomen", "Foot"] # *** EDIT HERE ***
     MANIKIN_FRAME_W, MANIKIN_FRAME_H = 1920, 1080 # Example reference resolution for coordinates
     MANIKIN_ZONE_DEFINITIONS = [
-        ActiveZone(name="Arm", rect=(50, 200, 450, 800)),
+        ActiveZone(name="Arm", rect=(50, 200, 650, 900)),
         ActiveZone(name="Abdomen", rect=(MANIKIN_FRAME_W - 450, 200, MANIKIN_FRAME_W - 50, 800)),
         ActiveZone(name="Foot", rect=(100, MANIKIN_FRAME_H - 250, 500, MANIKIN_FRAME_H - 50)) # Adjust coordinates as needed
     ]
 
-    SYRINGE_TABLE_ZONE_NAMES = ["Table Zone 1", "Table Zone 2", "Table Zone 3", "Table Zone 4"] # *** EDIT HERE ***
+    SYRINGE_TABLE_ZONE_NAMES = ["Table Zone 1", "Table Zone 2", "Table Zone 3"] # *** EDIT HERE ***
     SYRINGE_FRAME_W, SYRINGE_FRAME_H = 1920, 1080 # Example reference resolution for coordinates
-    gap=10; zone_width=420; zone_height=600; bottom=SYRINGE_FRAME_H-50; top=bottom-zone_height
+    
     SYRINGE_ZONE_DEFINITIONS = [
-        ActiveZone(name="Table Zone 1", rect=(100, top, 100 + zone_width, bottom)), # *** EDIT HERE ***
-        ActiveZone(name="Table Zone 2", rect=(100 + zone_width + gap, top, 100 + 2 * zone_width + gap, bottom)), # *** EDIT HERE ***
-        ActiveZone(name="Table Zone 3", rect=(100 + 2 * (zone_width + gap), top, 100 + 3 * zone_width + 2 * gap, bottom)), # *** EDIT HERE ***
-        ActiveZone(name="Table Zone 4", rect=(100 + 3 * (zone_width + gap), top, 100 + 4 * zone_width + 3 * gap, bottom)), # *** EDIT HERE ***
+        ActiveZone(name="Table Zone 1", rect=(100, 100, 500, 500)), # *** EDIT HERE ***
+        ActiveZone(name="Table Zone 2", rect=(520, 100, 700, 500)), # *** EDIT HERE ***
+        ActiveZone(name="Table Zone 3", rect=(720, 100, 1300, 500)), # *** EDIT HERE ***
+        #ActiveZone(name="Table Zone 4", rect=(100 + 3 * (zone_width + gap), top, 100 + 4 * zone_width + 3 * gap, bottom)), # *** EDIT HERE ***
     ]
 
     # --- Workflow Logic Parameters ---
-    CORRECT_STARTING_ZONE = "Table Zone 4"      # *** EDIT HERE ***
+    CORRECT_STARTING_ZONE = "Table Zone 3"      # *** EDIT HERE ***
     CORRECT_SYRINGE_DIAMETER_CM = 2.0           # *** EDIT HERE ***
     TARGET_VOLUME_ML = 15.0                      # *** EDIT HERE ***
     VOLUME_TOLERANCE_ML = 5                  # *** EDIT HERE ***
-    CORRECT_TARGET_ZONE = "Foot"             # *** EDIT HERE ***
+    CORRECT_TARGET_ZONE = "Arm"             # *** EDIT HERE ***
 
     # --- Timeouts Removed ---
 
