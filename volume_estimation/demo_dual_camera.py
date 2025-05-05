@@ -627,7 +627,7 @@ if __name__ == "__main__":
 
     # ----- Configuration: USER MUST EDIT THESE VALUES -----
     YOLO_MODEL_PATH = "runs/pose/train-pose11n-v30/weights/best.pt" # *** EDIT HERE ***
-    POSSIBLE_SYRINGE_DIAMETERS_CM = [0.45, 1.0, 1.25, 2.0] # *** EDIT HERE ***
+    POSSIBLE_SYRINGE_DIAMETERS_CM = [1.0, 1.25, 2.0] # *** EDIT HERE ***
     MANIKIN_CAMERA_INDEX = 1    # *** EDIT HERE ***
     SYRINGES_CAMERA_INDEX = 0   # *** EDIT HERE ***
 
@@ -640,21 +640,21 @@ if __name__ == "__main__":
         # Example coordinates for Foot (bottom-left area): (x1=100, y1=830, x2=500, y2=1030)
     ]
 
-    SYRINGE_TABLE_ZONE_NAMES = ["Table Zone 1", "Table Zone 2", "Table Zone 3", "Table Zone 4"] # *** EDIT HERE ***
+    SYRINGE_TABLE_ZONE_NAMES = ["Table Zone 1", "Table Zone 2", "Table Zone 3"] # *** EDIT HERE ***
     SYRINGE_FRAME_W, SYRINGE_FRAME_H = 1920, 1080 # Example frame size for coordinate reference
     gap=10; zone_width=420; zone_height=600; bottom=SYRINGE_FRAME_H-50; top=bottom-zone_height
     SYRINGE_ZONE_DEFINITIONS = [
         ActiveZone(name="Table Zone 1", rect=(100, top, 100 + zone_width, bottom)), # *** EDIT HERE ***
         ActiveZone(name="Table Zone 2", rect=(100 + zone_width + gap, top, 100 + 2 * zone_width + gap, bottom)), # *** EDIT HERE ***
         ActiveZone(name="Table Zone 3", rect=(100 + 2 * (zone_width + gap), top, 100 + 3 * zone_width + 2 * gap, bottom)), # *** EDIT HERE ***
-        ActiveZone(name="Table Zone 4", rect=(100 + 3 * (zone_width + gap), top, 100 + 4 * zone_width + 3 * gap, bottom)), # *** EDIT HERE ***
+        #ActiveZone(name="Table Zone 4", rect=(100 + 3 * (zone_width + gap), top, 100 + 4 * zone_width + 3 * gap, bottom)), # *** EDIT HERE ***
     ]
 
-    CORRECT_STARTING_ZONE = "Table Zone 4"      # *** EDIT HERE ***
+    CORRECT_STARTING_ZONE = "Table Zone 3"      # *** EDIT HERE ***
     CORRECT_SYRINGE_DIAMETER_CM = 2.0           # *** EDIT HERE ***
     TARGET_VOLUME_ML = 15.0                      # *** EDIT HERE ***
     VOLUME_TOLERANCE_ML = 5                  # *** EDIT HERE ***
-    CORRECT_TARGET_ZONE = "Foot"             # *** EDIT HERE ***
+    CORRECT_TARGET_ZONE = "Arm"             # *** EDIT HERE ***
 
     # --- Timeouts Removed ---
     # PICKUP_INSERT_TIMEOUT = 15.0
