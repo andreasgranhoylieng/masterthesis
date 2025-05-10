@@ -639,8 +639,8 @@ if __name__ == "__main__":
     POSSIBLE_SYRINGE_DIAMETERS_CM = [0.45, 1.0, 1.25, 2.0] # *** EDIT HERE ***
 
     # --- VIDEO FILE INPUT ---
-    MANIKIN_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/cam1_20250510_140817_2592x1944.mp4"  # *** EDIT HERE: Path to the manikin perspective video ***
-    SYRINGES_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/cam0_20250510_140817_2592x1944.mp4" # *** EDIT HERE: Path to the table/syringes perspective video ***
+    MANIKIN_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/cam1_20250510_140456_2592x1944.mp4"  # *** EDIT HERE: Path to the manikin perspective video ***
+    SYRINGES_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/cam0_20250510_140456_2592x1944.mp4" # *** EDIT HERE: Path to the table/syringes perspective video ***
     # --- Camera Indices Removed ---
     # MANIKIN_CAMERA_INDEX = 1
     # SYRINGES_CAMERA_INDEX = 0
@@ -648,8 +648,8 @@ if __name__ == "__main__":
     # --- Active Zone Definitions ---
     MANIKIN_TARGET_ZONE_NAMES = ["Arm", "Throat", "Foot"] # *** EDIT HERE ***
     MANIKIN_ZONE_DEFINITIONS = [
-        ActiveZone(name="Arm", rect=(1750, 1100, 2000, 1400)),
-        ActiveZone(name="Throat", rect=(1950, 600, 2150, 1000)),
+        ActiveZone(name="Arm", rect=(1800, 1100, 2000, 1400)),
+        ActiveZone(name="Throat", rect=(2000, 700, 2150, 1000)),
         ActiveZone(name="Foot", rect=(800, 1200, 1200, 1600)) 
     ]
 
@@ -664,11 +664,11 @@ if __name__ == "__main__":
     ]
 
     # --- Workflow Logic Parameters ---
-    CORRECT_STARTING_ZONE = "Table Zone 2"      # *** EDIT HERE ***
-    CORRECT_SYRINGE_DIAMETER_CM = 1.25           # *** EDIT HERE ***
-    TARGET_VOLUME_ML = 4                     # *** EDIT HERE ***
+    CORRECT_STARTING_ZONE = "Table Zone 1"      # *** EDIT HERE ***
+    CORRECT_SYRINGE_DIAMETER_CM = 1.0           # *** EDIT HERE ***
+    TARGET_VOLUME_ML = 2.0                      # *** EDIT HERE ***
     VOLUME_TOLERANCE_ML = 1                  # *** EDIT HERE ***
-    CORRECT_TARGET_ZONE = "Arm"             # *** EDIT HERE ***
+    CORRECT_TARGET_ZONE = "Foot"             # *** EDIT HERE ***
 
     # --- Timeouts Removed ---
 
