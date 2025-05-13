@@ -635,12 +635,12 @@ if __name__ == "__main__":
 
 
     # ----- Configuration: USER MUST EDIT THESE VALUES -----
-    YOLO_MODEL_PATH = "runs/pose/train-pose11n-v31/weights/best.pt" # *** EDIT HERE ***
+    YOLO_MODEL_PATH = "runs/pose/train-pose11n-v32/weights/best.pt" # *** EDIT HERE ***
     POSSIBLE_SYRINGE_DIAMETERS_CM = [0.45, 1.0, 1.25, 2.0] # *** EDIT HERE ***
 
     # --- VIDEO FILE INPUT ---
-    MANIKIN_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/cam1_20250510_140817_2592x1944.mp4"  # *** EDIT HERE: Path to the manikin perspective video ***
-    SYRINGES_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/cam0_20250510_140817_2592x1944.mp4" # *** EDIT HERE: Path to the table/syringes perspective video ***
+    MANIKIN_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/cam1_20250512_091055_2592x1944.mp4"  # *** EDIT HERE: Path to the manikin perspective video ***
+    SYRINGES_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/cam0_20250512_091055_2592x1944.mp4" # *** EDIT HERE: Path to the table/syringes perspective video ***
     # --- Camera Indices Removed ---
     # MANIKIN_CAMERA_INDEX = 1
     # SYRINGES_CAMERA_INDEX = 0
@@ -648,9 +648,9 @@ if __name__ == "__main__":
     # --- Active Zone Definitions ---
     MANIKIN_TARGET_ZONE_NAMES = ["Arm", "Throat", "Foot"] # *** EDIT HERE ***
     MANIKIN_ZONE_DEFINITIONS = [
-        ActiveZone(name="Arm", rect=(1750, 1100, 2000, 1400)),
-        ActiveZone(name="Throat", rect=(1950, 600, 2150, 1000)),
-        ActiveZone(name="Foot", rect=(800, 1200, 1200, 1600)) 
+        ActiveZone(name="Arm", rect=(1850, 700, 2100, 1100)),
+        ActiveZone(name="Throat", rect=(2100, 400, 2300, 800)),
+        ActiveZone(name="Foot", rect=(900, 800, 1100, 1200)) 
     ]
 
     SYRINGE_TABLE_ZONE_NAMES = ["Table Zone 1", "Table Zone 2", "Table Zone 3"] # *** EDIT HERE ***
