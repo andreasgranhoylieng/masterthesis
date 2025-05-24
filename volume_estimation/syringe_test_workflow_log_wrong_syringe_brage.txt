@@ -1,0 +1,23 @@
+2025-05-22 09:04:06 [SETUP] [IDLE] --- Workflow Initialized (Simplified Logic v2 - No Timeout / Persistent Vol) ---
+2025-05-22 09:04:06 [SETUP] [IDLE] Table Zones (Syringe Cam): ['Table Zone 1', 'Table Zone 2', 'Table Zone 3']
+2025-05-22 09:04:06 [SETUP] [IDLE] Target Zones (Manikin Cam): ['Arm', 'Throat', 'Foot']
+2025-05-22 09:04:06 [SETUP] [IDLE] Correct Start Zone: 'Table Zone 2'
+2025-05-22 09:04:06 [SETUP] [IDLE] Correct Diameter: 1.25 cm
+2025-05-22 09:04:06 [SETUP] [IDLE] Target Volume: 5.00 +/- 3.00 mL
+2025-05-22 09:04:06 [SETUP] [IDLE] Correct Target Zone: 'Arm'
+2025-05-22 09:04:06 [SETUP] [IDLE] --- Waiting for Action ---
+2025-05-22 09:04:11 [INFO ] [IDLE] Initial table state identified.
+2025-05-22 09:04:18 [INFO ] [IDLE] Syringe ID 1 (syringes cam) disappeared from 'Table Zone 1'. State -> SYRINGE_PICKED.
+2025-05-22 09:04:18 [ERROR] [SYRINGE_PICKED] Wrong Syringe Picked: Picked up ID 1 from 'Table Zone 1', expected 'Table Zone 2'.
+2025-05-22 09:04:23 [ERROR] [SYRINGE_PICKED] Syringe Returned Prematurely: Pickup ID 1 returned to table zone 'Table Zone 1' before insertion.
+2025-05-22 09:04:23 [SUMMARY] [SYRINGE_PICKED] Cycle ended for syringe ID 1 (from syringes cam). Errors: Syringe Returned Prematurely, Wrong Syringe Picked.
+2025-05-22 09:04:23 [INFO ] [SYRINGE_PICKED] Resetting state to IDLE. Reason: Syringe returned prematurely to 'Table Zone 1'
+2025-05-22 09:04:27 [INFO ] [IDLE] Syringe ID 2 (syringes cam) disappeared from 'Table Zone 2'. State -> SYRINGE_PICKED.
+2025-05-22 09:04:53 [INFO ] [SYRINGE_PICKED] Syringe detected in target zone 'Arm' (Manikin Cam ID: 18). Assuming insertion of pickup ID 2. State -> SYRINGE_INSERTED.
+2025-05-22 09:04:53 [INFO ] [SYRINGE_INSERTED] Inserted into CORRECT target zone 'Arm'.
+2025-05-22 09:04:53 [INFO ] [SYRINGE_INSERTED] Volume measured at insertion: 4.12 mL (for 1.25cm diameter).
+2025-05-22 09:04:53 [INFO ] [SYRINGE_INSERTED] Initial Volume is within target range.
+2025-05-22 09:05:04 [INFO ] [SYRINGE_INSERTED] Syringe ID 32 appeared in table zone 'Table Zone 2'. Assuming return of inserted syringe (Manikin ID 18).
+2025-05-22 09:05:04 [INFO ] [SYRINGE_INSERTED] Workflow cycle completed successfully.
+2025-05-22 09:05:04 [SUMMARY] [SYRINGE_INSERTED] Cycle ended for syringe ID 18 (from manikin cam). Status: OK.
+2025-05-22 09:05:04 [INFO ] [SYRINGE_INSERTED] Resetting state to IDLE. Reason: Cycle completed successfully, syringe returned to 'Table Zone 2'

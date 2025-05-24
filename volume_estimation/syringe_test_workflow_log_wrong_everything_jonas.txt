@@ -1,0 +1,19 @@
+2025-05-22 08:56:51 [SETUP] [IDLE] --- Workflow Initialized (Simplified Logic v2 - No Timeout / Persistent Vol) ---
+2025-05-22 08:56:51 [SETUP] [IDLE] Table Zones (Syringe Cam): ['Table Zone 1', 'Table Zone 3', 'Table Zone 2']
+2025-05-22 08:56:51 [SETUP] [IDLE] Target Zones (Manikin Cam): ['Arm', 'Throat', 'Foot']
+2025-05-22 08:56:51 [SETUP] [IDLE] Correct Start Zone: 'Table Zone 2'
+2025-05-22 08:56:51 [SETUP] [IDLE] Correct Diameter: 1.25 cm
+2025-05-22 08:56:51 [SETUP] [IDLE] Target Volume: 4.00 +/- 2.00 mL
+2025-05-22 08:56:51 [SETUP] [IDLE] Correct Target Zone: 'Throat'
+2025-05-22 08:56:51 [SETUP] [IDLE] --- Waiting for Action ---
+2025-05-22 08:56:56 [INFO ] [IDLE] Initial table state identified.
+2025-05-22 08:57:07 [INFO ] [IDLE] Syringe ID 1 (syringes cam) disappeared from 'Table Zone 1'. State -> SYRINGE_PICKED.
+2025-05-22 08:57:07 [ERROR] [SYRINGE_PICKED] Wrong Syringe Picked: Picked up ID 1 from 'Table Zone 1', expected 'Table Zone 2'.
+2025-05-22 08:57:21 [INFO ] [SYRINGE_PICKED] Syringe detected in target zone 'Foot' (Manikin Cam ID: 15). Assuming insertion of pickup ID 1. State -> SYRINGE_INSERTED.
+2025-05-22 08:57:21 [ERROR] [SYRINGE_INSERTED] Wrong Target Zone: Inserted into WRONG zone 'Foot', expected 'Throat'.
+2025-05-22 08:57:21 [WARN ] [SYRINGE_INSERTED] Reminder: Syringe was picked from wrong start zone.
+2025-05-22 08:57:21 [INFO ] [SYRINGE_INSERTED] Volume measured at insertion: 0.41 mL (for 1.25cm diameter).
+2025-05-22 08:57:21 [ERROR] [SYRINGE_INSERTED] Incorrect Volume: Initial Volume 0.41mL outside target 4.00 +/- 2.00mL.
+2025-05-22 08:57:35 [INFO ] [SYRINGE_INSERTED] Syringe ID 25 appeared in table zone 'Table Zone 1'. Assuming return of inserted syringe (Manikin ID 15).
+2025-05-22 08:57:35 [SUMMARY] [SYRINGE_INSERTED] Cycle ended for syringe ID 15 (from manikin cam). Errors: Incorrect Volume, Wrong Syringe Picked, Wrong Target Zone.
+2025-05-22 08:57:35 [INFO ] [SYRINGE_INSERTED] Resetting state to IDLE. Reason: Cycle completed with errors, syringe returned to 'Table Zone 1'

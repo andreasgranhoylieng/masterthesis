@@ -1,0 +1,17 @@
+2025-05-22 09:22:12 [SETUP] [IDLE] --- Workflow Initialized (Simplified Logic v2 - No Timeout / Persistent Vol) ---
+2025-05-22 09:22:12 [SETUP] [IDLE] Table Zones (Syringe Cam): ['Table Zone 1', 'Table Zone 3', 'Table Zone 2']
+2025-05-22 09:22:12 [SETUP] [IDLE] Target Zones (Manikin Cam): ['Arm', 'Foot', 'Throat']
+2025-05-22 09:22:12 [SETUP] [IDLE] Correct Start Zone: 'Table Zone 3'
+2025-05-22 09:22:12 [SETUP] [IDLE] Correct Diameter: 1.0 cm
+2025-05-22 09:22:12 [SETUP] [IDLE] Target Volume: 3.00 +/- 0.50 mL
+2025-05-22 09:22:12 [SETUP] [IDLE] Correct Target Zone: 'Foot'
+2025-05-22 09:22:12 [SETUP] [IDLE] --- Waiting for Action ---
+2025-05-22 09:22:17 [INFO ] [IDLE] Initial table state identified.
+2025-05-22 09:22:17 [INFO ] [IDLE] Syringe ID 3 (syringes cam) disappeared from 'Table Zone 3'. State -> SYRINGE_PICKED.
+2025-05-22 09:22:30 [INFO ] [SYRINGE_PICKED] Syringe detected in target zone 'Arm' (Manikin Cam ID: 15). Assuming insertion of pickup ID 3. State -> SYRINGE_INSERTED.
+2025-05-22 09:22:30 [ERROR] [SYRINGE_INSERTED] Wrong Target Zone: Inserted into WRONG zone 'Arm', expected 'Foot'.
+2025-05-22 09:22:30 [INFO ] [SYRINGE_INSERTED] Volume measured at insertion: 1.93 mL (for 1.0cm diameter).
+2025-05-22 09:22:30 [ERROR] [SYRINGE_INSERTED] Incorrect Volume: Initial Volume 1.93mL outside target 3.00 +/- 0.50mL.
+2025-05-22 09:22:40 [INFO ] [SYRINGE_INSERTED] Syringe ID 26 appeared in table zone 'Table Zone 3'. Assuming return of inserted syringe (Manikin ID 15).
+2025-05-22 09:22:40 [SUMMARY] [SYRINGE_INSERTED] Cycle ended for syringe ID 15 (from manikin cam). Errors: Incorrect Volume, Wrong Target Zone.
+2025-05-22 09:22:40 [INFO ] [SYRINGE_INSERTED] Resetting state to IDLE. Reason: Cycle completed with errors, syringe returned to 'Table Zone 3'
