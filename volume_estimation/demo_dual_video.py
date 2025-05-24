@@ -129,7 +129,7 @@ class SyringeVolumeEstimator:
         if table_y < 10: table_y = 10
         table_x, table_y = int(table_x), int(table_y)
         try:
-            overlay = frame.copy(); cv2.rectangle(overlay, (table_x, table_y), (table_x + table_width, table_y + table_height), (210, 210, 210), -1); alpha = 0.6; cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
+            overlay = frame.copy(); cv2.rectangle(overlay, (table_x, table_y), (table_x + table_width, table_y + table_height), (210, 210, 210), -1); alpha = 7; cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
         except Exception as e: print(f"Warning: Error drawing table background: {e}")
         text_color=(0,0,0); font=cv2.FONT_HERSHEY_SIMPLEX; font_scale=0.5; thickness=1
         cv2.putText(frame, f"Syringe ID: {track_id}", (table_x + 10, table_y + 20), font, 0.6, text_color, thickness + 1)
@@ -636,11 +636,11 @@ if __name__ == "__main__":
 
     # ----- Configuration: USER MUST EDIT THESE VALUES -----
     YOLO_MODEL_PATH = "runs/pose/train-pose11n-v32/weights/best.pt" # *** EDIT HERE ***
-    POSSIBLE_SYRINGE_DIAMETERS_CM = [0.45, 1.0, 1.25, 2.0] # *** EDIT HERE ***
+    POSSIBLE_SYRINGE_DIAMETERS_CM = [1.0, 1.25, 2.0] # *** EDIT HERE ***
 
     # --- VIDEO FILE INPUT ---
-    MANIKIN_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/cam1_20250512_091055_2592x1944.mp4"  # *** EDIT HERE: Path to the manikin perspective video ***
-    SYRINGES_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/cam0_20250512_091055_2592x1944.mp4" # *** EDIT HERE: Path to the table/syringes perspective video ***
+    MANIKIN_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/person_22/20250523_140100/cam1_20250523_140100_2592x1944.mp4"  # *** EDIT HERE: Path to the manikin perspective video ***
+    SYRINGES_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/person_22/20250523_140100/cam0_20250523_140100_2592x1944.mp4" # *** EDIT HERE: Path to the table/syringes perspective video ***
     # --- Camera Indices Removed ---
     # MANIKIN_CAMERA_INDEX = 1
     # SYRINGES_CAMERA_INDEX = 0
@@ -648,26 +648,26 @@ if __name__ == "__main__":
     # --- Active Zone Definitions ---
     MANIKIN_TARGET_ZONE_NAMES = ["Arm", "Throat", "Foot"] # *** EDIT HERE ***
     MANIKIN_ZONE_DEFINITIONS = [
-        ActiveZone(name="Arm", rect=(1850, 700, 2100, 1100)),
-        ActiveZone(name="Throat", rect=(2100, 400, 2300, 800)),
-        ActiveZone(name="Foot", rect=(900, 800, 1100, 1200)) 
+        ActiveZone(name="Arm", rect=(2000, 850, 2250, 1250)),
+        ActiveZone(name="Throat", rect=(2100, 550, 2400, 800)),
+        ActiveZone(name="Foot", rect=(950, 750, 1250, 1100)) 
     ]
 
     SYRINGE_TABLE_ZONE_NAMES = ["Table Zone 1", "Table Zone 2", "Table Zone 3"] # *** EDIT HERE ***
     SYRINGE_FRAME_W, SYRINGE_FRAME_H = 1920, 1080 # Example reference resolution for coordinates
     
     SYRINGE_ZONE_DEFINITIONS = [
-        ActiveZone(name="Table Zone 1", rect=(1000, 500, 1350, 1200)), # *** EDIT HERE ***
+        ActiveZone(name="Table Zone 1", rect=(800, 500, 1350, 1200)), # *** EDIT HERE ***
         ActiveZone(name="Table Zone 2", rect=(1350, 500, 1700, 1200)), # *** EDIT HERE ***
         ActiveZone(name="Table Zone 3", rect=(1700, 500, 2400, 1200)), # *** EDIT HERE ***
         #ActiveZone(name="Table Zone 4", rect=(100 + 3 * (zone_width + gap), top, 100 + 4 * zone_width + 3 * gap, bottom)), # *** EDIT HERE ***
     ]
 
     # --- Workflow Logic Parameters ---
-    CORRECT_STARTING_ZONE = "Table Zone 2"      # *** EDIT HERE ***
-    CORRECT_SYRINGE_DIAMETER_CM = 1.25           # *** EDIT HERE ***
-    TARGET_VOLUME_ML = 4                     # *** EDIT HERE ***
-    VOLUME_TOLERANCE_ML = 1                  # *** EDIT HERE ***
+    CORRECT_STARTING_ZONE = "Table Zone 1"      # *** EDIT HERE ***
+    CORRECT_SYRINGE_DIAMETER_CM = 2.00          # *** EDIT HERE ***
+    TARGET_VOLUME_ML = 20                    # *** EDIT HERE ***
+    VOLUME_TOLERANCE_ML = 4                  # *** EDIT HERE ***
     CORRECT_TARGET_ZONE = "Arm"             # *** EDIT HERE ***
 
     # --- Timeouts Removed ---
