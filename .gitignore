@@ -15,7 +15,6 @@ runs/
 
 *.mp4
 *.MOV
-*.csv
 *.pth
 .aider*
 
