@@ -1,0 +1,79 @@
+person,target volume,estimated volume,target place,estimated place,container weight,syringe,notes
+person1, 10, 10.4, throat, throat, 17.5, 20ml, with lid
+person1, 3, 3.46, foot, foot, 10.8, 5ml, with lid
+person1, 1, nan, arm, arm, 8.9, 3ml, with lid and hands covering syringe
+person2, 5, 4.50, foot, foot, 13.5, 20ml, with lid
+person2, 4, 4.69, arm, arm, 12, 5ml, with lid
+person2, 3, 0.46, throat, throat, 11.0, 3ml, with lid. bad reading 
+person3, 10, 10.90, throat, throat, 14.90, 20ml,
+person3, 4, 3.32, arm, arm, 9.00, 5ml, partial occlusion of plunger
+person3, 2, 2.15, foot, foot, 7.30, 3ml,
+person4, 20, 14.13, foot, foot, 24.6, 20ml,
+person4, 2, 1.80, arm, arm, 6.8, 5ml, syringe on table dissaperars. need more relevant training data
+person4, corrupted video, corrupted video, corrupted video, corrupted video, corrupted video, corrupted video, 
+person5, 5, 6.98, throat, throat, 9.9, 20ml,
+person5, 3, 2.78, arm, arm, 7.7, 5ml,
+person5, 3, 2.43, foot, foot, 8.0, 3ml, partial occlusion of plunger
+person6, 15, 15.71, foot, foot, 20.1, 20ml, initial condition not met. manual extraction of volume.
+person6, 1, 1.74, arm, arm, 5.6, 5ml,
+person6, 3, 2.29, throat, throat, 7.8, 3ml,
+person7, 10, 13.06, throat, throat, 14.08, 20ml,
+person7, 4, 2.45, arm, arm, 8.7, 5ml, horrible reading
+person7, 2, 2.00, foot, foot, 7.0, 3ml,
+person8, 20,19.98, arm, arm, 24.1, 20ml,
+person8, 2, 1.58, foot, foot, 6.9, 3ml,
+person8, 1, 0.64, throat, throat, 5.8, 3ml,
+person9, 20, 15.16, throat, throat, 23.7, 20ml,
+person9, 3, 3.26, arm, arm, 7.7, 5ml,
+person9, 2, 1.32, foot, foot, 7.0, 3ml,
+person10, 4, 3.05, foot, foot, 8.8, 5ml,
+person10, 20, 19.21, arm, arm, 24.3, 20ml,
+person10, 3, 2.41, throat, throat, 7.7, 5ml,
+person11, 5, 3.44, foot, foot, 9.8, 5ml,
+person11, 5, 4.53, throat, throat, 9.3, 5ml,
+person11, 2, 1.59, arm, arm, 6.8, 3ml,
+person12, 20, 11.02, arm, arm, 24.4, 20ml, person8 in folder. Occlusion of plunger and 
+person12, 2, 1.81, foot, foot, 6.8, 3ml,
+person12, nan,nan,nan,nan,nan,3ml, Throat not included in video
+person13, nan,nan,nan,nan,nan,3ml, Throat not included in video
+person13, 4, 3.23, arm, arm, 8.7, 5ml,
+person13,20, 15.66, foot, foot, 24.8, 20ml,
+person14, 3, 3.31, arm, arm, 7.8, 5ml,
+person14, nan,nan,nan,nan,nan,20ml, Throat not included in video
+person14, 2,1.88, foot, foot, 7.1, 5ml,
+person15,nan,nan,nan,nan,nan,5ml, Throat not included in video
+person15, 4, 3.66, foot, foot, 8.9, 5ml,
+person15, 2, 1.70, arm, arm, 6.9, 3ml, 
+person16, 3, 2.42, throat, throat, 8.0, 5ml,
+person16, 1, 1.21, foot, foot, 6.0, 3ml
+person16, 5, 2.09, arm, arm, 9.8, 5ml, big occlusion
+person17, 15, 15.57, foot, foot, 24.6, 20ml,
+person17, 5, 4.15, arm, arm, 9.9, 5ml, occlusion of plunger
+person17, 5, 4.63, throat, throat, 10.0, 20ml, 
+person18, 5, 4.87, throat, throat, 10.2, 20ml, 
+person18, nan,nan,nan,nan,nan,5ml, no syringe detected
+person18, 20, 20.38, foot, foot, 24.9, 20ml,
+person19, nan,nan,nan,nan,nan,3ml, no syringe detected
+person19, 2, 1.97, foot, foot, 7.0, 3ml,
+person19, nan,nan,nan,nan,nan,5ml, no syringe detected
+person20, 15, 15.34, foot, foot, 19.6, 20ml,
+person20, 5, 1.33, arm, arm, 9.7, 20ml,
+person20, 3, 2.66, throat, throat, 7.9, 3ml,
+person21, nan,nan,nan,nan,nan,3ml, no syringe detected
+person21, 1, 0.84, arm, arm, 6.0, 5ml,
+person21, 20, 19.42, foot, foot, 24.9, 20ml,
+person22, nan,nan,nan,nan,nan,20ml, no syringe detected
+person22, 10, 8.56, throat, throat, 15.8, 20ml,
+person22, 3, 2.84, foot, foot, 7.8, 5ml
+person23, 15, 15.30, foot, foot, 19.7, 20ml,
+person23, 10, 9.39, throat, throat, 15.2, 20ml,
+person23, 2, 1.86, arm, arm, 6.9, 3ml,
+person24, 10, 7.69, throat, throat, 14.8, 20ml,
+person24, 1, 0.73, arm, arm, 5.9, 3ml,
+person24, 4, 4.57, foot, foot, 9.0, 5ml,
+person25, 3, 1.80, throat, throat, 8.0, 3ml,
+person25, 10, 9.32, arm, arm, 14.5, 20ml,
+person25, 15, 14.45, foot, foot, 19.7, 20ml,
+person26, 20, 14.22, foot, foot, 24.8, 20ml,
+person26, nan,nan,nan,nan,nan,10ml, no syringe detected
+person26, 20, 19.54, throat, throat, 24.4, 20ml,
