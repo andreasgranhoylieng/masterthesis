@@ -1,67 +1,84 @@
-# Computer Vision Project Template
+# Syringe Analysis and Workflow Automation Project
 
-This repository provides a template structure for computer vision projects, incorporating common stages like data annotation, model training, and inference.
+This repository contains a collection of tools and experiments for syringe detection, volume estimation, tracking, and workflow automation using computer vision and machine learning techniques.
 
-## Components
+## Project Structure
 
-1.  **Data Annotation (`data_annotation/`)**: Tools and scripts for preparing and annotating image or video datasets. (Example: using a tool like GroundingDINO or LabelImg).
-2.  **Object Detection/Tracking (`object_detection_tracking/`)**: Modules for detecting and tracking objects in images or video streams. (Example: using models like YOLO, Faster R-CNN with trackers like ByteTrack or DeepSORT).
-3.  **Downstream Task (`downstream_task/`)**: Application-specific module that utilizes the outputs from previous stages. (Example: volume estimation, activity recognition, image segmentation).
+The project is organized into the following main directories:
 
-## Features
+*   **[`dino/`](dino/):** Contains scripts for object detection using GroundingDINO.
+    *   [`frame_extractor.py`](dino/frame_extractor.py:1): Extracts frames from videos.
+    *   [`main.ipynb`](dino/main.ipynb:1): Performs object detection on extracted frames and saves annotations in Pascal VOC XML format.
+    *   See [`dino/README.md`](dino/README.md:1) for more details.
+*   **[`syringe_tracking/`](syringe_tracking/):** Focuses on training YOLO models for syringe object detection and tracking.
+    *   [`train.py`](syringe_tracking/train.py:1): Trains YOLOv8 models for object detection.
+    *   [`video_inference_od.ipynb`](syringe_tracking/video_inference_od.ipynb:1): Performs object detection and tracking on videos using a trained model and ByteTrack.
+    *   [`webcam_inference_od.ipynb`](syringe_tracking/webcam_inference_od.ipynb:1): Performs real-time object detection and pose estimation from a webcam.
+    *   [`bytetrack_od.yaml`](syringe_tracking/bytetrack_od.yaml:1): Configuration for the ByteTrack tracker.
+    *   See [`syringe_tracking/README.md`](syringe_tracking/README.md:1) for more details.
+*   **[`volume_estimation/`](volume_estimation/):** Contains scripts and notebooks for estimating syringe volume using YOLO Pose and analyzing clinical workflows.
+    *   Demonstration scripts (`demo.py`, `demo_dual_camera.py`, `demo_dual_video.py`): Showcase volume estimation and workflow validation using single or dual camera/video inputs.
+    *   [`train.py`](volume_estimation/train.py:1): Trains YOLO Pose models for syringe keypoint detection.
+    *   [`video_and_webcam_inference.py`](volume_estimation/video_and_webcam_inference.py:1): Simpler inference script for volume estimation.
+    *   [`record_video.py`](volume_estimation/record_video.py:1): Utility to record synchronized videos from two cameras.
+    *   [`visualize_features.py`](volume_estimation/visualize_features.py:1): Tool to visualize CNN feature maps.
+    *   Analysis notebooks (`metric_calculation.ipynb`, `metrics_comparison.ipynb`): Process experimental data and compare model performances.
+    *   See [`volume_estimation/README.md`](volume_estimation/README.md:1) for more details.
+*   **[`datasets/`](datasets/):** Intended location for datasets. Contains a `.gitkeep` file. Datasets are downloaded here by [`download_datasets.ipynb`](download_datasets.ipynb:1).
+    *   `Syringe-volume-estimation-yolo/`: Dataset for YOLO Pose estimation.
+    *   `Syringes/`: Dataset for general syringe object detection.
 
--   Modular structure for different CV tasks.
--   Example scripts for training and inference.
--   Support for dataset management.
--   Conda environment for reproducible setup.
--   Jupyter Notebooks for experimentation and visualization.
+## Root Directory Files
 
-## Setup
+*   **[`download_datasets.ipynb`](download_datasets.ipynb:1):** Jupyter Notebook to download datasets from Roboflow using an API key (requires a `.env` file with `ROBOFLOW_API_KEY`).
+    *   Downloads "syringe-volume-estimation" (version 13) for YOLOv8 pose.
+    *   Downloads "syringe-tracker" (version 4) for YOLOv11 object detection.
+*   **[`environment.yml`](environment.yml:1):** Conda environment file listing project dependencies. This allows for reproducible environments.
+*   **[`id_generator.ipynb`](id_generator.ipynb:1):** Jupyter Notebook to generate random 4-digit IDs and three distinct tasks for a simulated medical scenario. Each task involves a body part, a syringe type, and a dose.
+*   **[`pyproject.toml`](pyproject.toml:1):** Configuration file for Python project tools, primarily `ruff` for linting and formatting. It defines excluded directories, line length, target Python version, and enabled linting rules.
+*   **[`.gitignore`](.gitignore:1):** Specifies intentionally untracked files that Git should ignore (e.g., `runs/`, `datasets/`, `*.mp4`, `*.csv`, `__pycache__/`).
+
+## General Setup
 
 1.  **Clone the repository:**
     ```bash
-    git clone YOUR_REPOSITORY_URL
-    cd YOUR_REPOSITORY_NAME
+    git clone https://github.com/andreasgranhoylieng/masterthesis.git
+    cd masterthesis
     ```
-
 2.  **Create Conda Environment:**
+    It's highly recommended to use the provided Conda environment file to ensure all dependencies are correctly installed.
     ```bash
     conda env create -f environment.yml
-    conda activate your-env-name
+    conda activate syringe-ml
     ```
-    *(Note: Ensure necessary model weights or pre-trained models are downloaded as per component-specific READMEs).*
-
-3.  **Download Datasets (Optional):**
-    If your project uses specific datasets, provide instructions or a script to download them.
-    ```bash
-    # Example:
-    # python download_script.py
-    # or run a Jupyter Notebook:
-    # jupyter notebook download_datasets.ipynb
-    ```
+3.  **Download Datasets:**
+    *   Create a `.env` file in the root directory with your Roboflow API key:
+        ```
+        ROBOFLOW_API_KEY=your_api_key_here
+        ```
+    *   Run the [`download_datasets.ipynb`](download_datasets.ipynb:1) notebook to download the necessary datasets into the `datasets/` folder.
+4.  **Pre-trained Models:**
+    *   The scripts generally expect pre-trained models (e.g., `best.pt` files from YOLO training runs) to be present in specific `runs/.../weights/` directories or specified paths.
+    *   You may need to train models first using the provided training scripts (e.g., [`syringe_tracking/train.py`](syringe_tracking/train.py:1), [`volume_estimation/train.py`](volume_estimation/train.py:1)) or download pre-trained weights if available.
 
 ## Usage
 
-Each component typically resides in its own directory with specific instructions and scripts:
+Refer to the README files within each subdirectory (`dino/`, `syringe_tracking/`, `volume_estimation/`) for specific instructions on how to run the scripts and notebooks therein.
 
--   **`data_annotation/`**: Follow instructions in `data_annotation/README.md` for dataset preparation. (e.g., run `annotation_tool.py` or `main_annotation_notebook.ipynb`).
--   **`object_detection_tracking/`**:
-    -   Train your model: `python train_detector.py --config config_file.yaml` (adjust configuration as needed).
-    -   Run inference: Use provided notebooks (e.g., `run_inference_video.ipynb`) or scripts (`run_inference_webcam.py`).
--   **`downstream_task/`**:
-    -   Train your task-specific model: `python train_task_model.py` (if applicable).
-    -   Run inference/application: Use provided notebooks or scripts (e.g., `run_application.ipynb`).
+### Linting and Formatting
+This project uses `ruff` for linting and formatting, configured via [`pyproject.toml`](pyproject.toml:1).
+You can run `ruff check .` to lint and `ruff format .` to format the code.
+`nbqa` can be used to run `ruff` on Jupyter notebooks: `nbqa ruff .`
 
-## Folder Structure
+## Key Technologies
+*   Python 3.9
+*   PyTorch
+*   Ultralytics YOLO (v8, v11, v12 for pose and object detection)
+*   OpenCV
+*   GroundingDINO
+*   Pandas, NumPy, Matplotlib, Seaborn (for data analysis and visualization)
+*   Roboflow (for dataset management)
+*   Conda (for environment management)
+*   Ruff (for linting/formatting)
 
-```
-.
-├── datasets/                     # Raw and processed datasets
-├── data_annotation/              # Scripts and tools for data annotation
-├── object_detection_tracking/    # Object detection and tracking models and scripts
-├── downstream_task/              # Application-specific logic and models
-├── .gitignore
-├── download_datasets.ipynb       # Example notebook to download datasets
-├── environment.yml               # Conda environment definition
-└── README.md                     # This file
-```
+This project forms the basis of a master's thesis focused on applying computer vision techniques to medical (syringe-related) tasks.
