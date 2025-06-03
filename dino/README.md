@@ -1,65 +1,71 @@
-# GroundingDINO for Automatic Syringe Annotation
+# Data Annotation Tools
 
-This directory contains the system for automatically generating bounding box annotations for syringes in images or videos using the GroundingDINO zero-shot object detection model.
+This directory (`data_annotation/`) contains tools and scripts for generating annotations for images or videos. This can include automatic, semi-automatic, or manual annotation methods.
 
 ## Overview
 
-The primary goal is to quickly generate initial annotations based on text prompts (e.g., "syringe"). These annotations can then be refined manually or used directly for training downstream object detection or pose estimation models (like those in the `../syringe_tracking` or `../volume_estimation` directories).
+The primary goal of this component is to prepare labeled data for training computer vision models. This might involve using pre-trained models for initial suggestions (like zero-shot detectors), or providing interfaces for manual labeling. The output annotations are typically used by downstream components like `../object_detection_tracking/` or `../downstream_task/`.
 
 ## Features
 
--   Zero-shot detection based on text prompts.
--   Processes both individual images and video frames.
--   Outputs annotations in Pascal VOC XML format.
--   Includes a utility for video frame extraction.
+-   Supports various annotation methods (e.g., bounding boxes, segmentation masks, keypoints).
+-   Can process individual images and/or video frames.
+-   Outputs annotations in common formats (e.g., COCO JSON, Pascal VOC XML, YOLO TXT).
+-   May include utilities for data preprocessing, like video frame extraction or image augmentation.
 
-## File Structure
+## File Structure (Example)
 
 ```
-dino/
-├── main.ipynb              # Main notebook for running annotation
-├── frame_extractor.py      # Utility to extract frames from videos
-├── github_files/           # GroundingDINO configs and weights
-│   ├── GroundingDINO_SwinB_cfg.py
-│   ├── GroundingDINO_SwinT_OGC.py
-│   └── groundingdino_swint_ogc.pth # <-- Downloaded weight file
-├── images/                 # Input image directory (place images here)
-├── videos/                 # Input video directory (place videos here)
-├── frames/                 # Output directory for extracted video frames (created by frame_extractor.py)
-├── annotations/            # Output directory for generated XML annotations (created by main.ipynb)
-└── README.md               # This file
+data_annotation/
+├── main_annotation_notebook.ipynb  # Main notebook for running/managing annotation tasks
+├── annotation_script.py          # Example script for an automated annotation process
+├── utils/                          # Utility scripts (e.g., frame_extractor.py, format_converter.py)
+│   ├── frame_extractor.py
+│   └── format_converter.py
+├── configs/                        # Configuration files for annotation tools or models
+│   └── annotation_config.yaml
+├── models/                         # Any models used for pre-annotation (e.g., GroundingDINO weights)
+│   └── model_weights.pth
+├── input_data/                     # Directory for raw images/videos to be annotated
+│   ├── images/
+│   └── videos/
+├── extracted_frames/               # Output for extracted video frames (if applicable)
+├── output_annotations/             # Directory for generated annotation files
+└── README.md                       # This file
 ```
 
 ## Setup
 
-1.  **Environment:** Ensure you have activated the conda environment specified in the root `environment.yml` file (`conda activate syringe-ml`).
-2.  **Download Model Weights:** Download the required GroundingDINO model weights (e.g., `groundingdino_swint_ogc.pth`). Place the `.pth` file inside the `dino/github_files/` directory. Refer to the official GroundingDINO repository if you need download links.
+1.  **Environment:** Ensure you have activated the conda environment specified in the root `environment.yml` file (e.g., `conda activate your-env-name`).
+2.  **Download Models/Dependencies:** If using specific pre-trained models (e.g., for zero-shot detection) or external tools, download them and place them in the appropriate directory (e.g., `data_annotation/models/`). Refer to specific tool documentation for details.
 3.  **Prepare Input Data:**
-    *   Place images you want to annotate into the `dino/images/` directory.
-    *   Place videos you want to annotate into the `dino/videos/` directory.
+    *   Place images to be annotated into `data_annotation/input_data/images/`.
+    *   Place videos to be annotated into `data_annotation/input_data/videos/`.
 
 ## Usage
 
-1.  **Extract Frames (Optional, for Videos):**
-    If you are using video files, first extract frames using the provided script. Open a terminal in the root directory (`masterthesis/`) and run:
+1.  **Pre-processing (e.g., Frame Extraction for Videos):**
+    If working with videos, you might need to extract frames first.
     ```bash
-    python dino/frame_extractor.py dino/videos/your_video.mp4 dino/frames/ 1.0
+    # Example:
+    python data_annotation/utils/frame_extractor.py data_annotation/input_data/videos/your_video.mp4 data_annotation/extracted_frames/ 1.0
     ```
     *   Replace `your_video.mp4` with your video file name.
-    *   The third argument (`1.0`) is the desired frames per second (FPS) to extract. Adjust as needed.
-    *   Extracted frames will be saved in the `dino/frames/` directory.
+    *   Adjust FPS as needed.
+    *   Extracted frames will be saved in `data_annotation/extracted_frames/`.
 
-2.  **Run Annotation Notebook:**
-    *   Open and run the `dino/main.ipynb` Jupyter Notebook.
-    *   Follow the instructions within the notebook.
+2.  **Run Annotation Process:**
+    *   Use the main script or notebook, e.g., `data_annotation/main_annotation_notebook.ipynb` or `python data_annotation/annotation_script.py`.
+    *   Follow the instructions within the chosen script/notebook.
 
-## Configuration (within `main.ipynb`)
+## Configuration (Example, within a script or notebook)
 
--   **`IMAGE_PATH` / `VIDEO_PATH`:** Set the path to your input images directory (`dino/images/`) or extracted frames directory (`dino/frames/`).
--   **`TEXT_PROMPT`:** Define the object you want to detect (e.g., `"syringe"`).
--   **`BOX_THRESHOLD`, `TEXT_THRESHOLD`:** Adjust detection confidence thresholds if necessary.
--   **`ANNOTATION_SAVE_DIR`:** Specify the directory where XML annotations will be saved (defaults to `dino/annotations/`).
+-   **`INPUT_IMAGE_DIR` / `INPUT_VIDEO_DIR`:** Path to your input data.
+-   **`OUTPUT_ANNOTATION_DIR`:** Directory to save generated annotations.
+-   **`ANNOTATION_FORMAT`:** Desired output format (e.g., "coco", "voc", "yolo").
+-   **`MODEL_CONFIG_PATH` (if applicable):** Path to configuration for any models used in annotation.
+-   **`LABEL_MAP` (if applicable):** Definition of class labels.
 
 ## Output
 
-The system generates annotations in the **Pascal VOC XML** format. Each XML file corresponds to an input image/frame and contains bounding box coordinates (`xmin`, `ymin`, `xmax`, `ymax`) and the class label (derived from the text prompt) for each detected object. These files are saved in the directory specified by `ANNOTATION_SAVE_DIR`.
+The system generates annotation files in the specified format (e.g., Pascal VOC XML, COCO JSON). These files typically contain information about object locations (bounding boxes, masks), class labels, and other relevant metadata. They are saved in the directory specified by `OUTPUT_ANNOTATION_DIR`.

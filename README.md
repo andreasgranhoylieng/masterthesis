@@ -1,67 +1,67 @@
-# Syringe Detection and Volume Estimation System
+# Computer Vision Project Template
 
-This repository contains a system for syringe detection, tracking, and volume estimation using computer vision and deep learning.
+This repository provides a template structure for computer vision projects, incorporating common stages like data annotation, model training, and inference.
 
 ## Components
 
-1.  **Automatic Annotation (`dino/`)**: Uses GroundingDINO to generate initial annotations for training data.
-2.  **Syringe Tracking (`syringe_tracking/`)**: Detects and tracks syringes in video streams using Ultralytics YOLOv11 and ByteTrack.
-3.  **Volume Estimation (`volume_estimation/`)**: Estimates syringe volume based on keypoint detection (plunger and barrel tip).
+1.  **Data Annotation (`data_annotation/`)**: Tools and scripts for preparing and annotating image or video datasets. (Example: using a tool like GroundingDINO or LabelImg).
+2.  **Object Detection/Tracking (`object_detection_tracking/`)**: Modules for detecting and tracking objects in images or video streams. (Example: using models like YOLO, Faster R-CNN with trackers like ByteTrack or DeepSORT).
+3.  **Downstream Task (`downstream_task/`)**: Application-specific module that utilizes the outputs from previous stages. (Example: volume estimation, activity recognition, image segmentation).
 
 ## Features
 
--   Automatic annotation generation.
--   Real-time syringe detection and tracking.
--   Volume estimation via keypoint analysis.
--   CSV export of volume measurements.
--   Supports video files and webcam streams.
--   Jupyter Notebook interfaces for ease of use.
+-   Modular structure for different CV tasks.
+-   Example scripts for training and inference.
+-   Support for dataset management.
+-   Conda environment for reproducible setup.
+-   Jupyter Notebooks for experimentation and visualization.
 
 ## Setup
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/andreasgranhoylieng/masterthesis.git
-    cd masterthesis
+    git clone YOUR_REPOSITORY_URL
+    cd YOUR_REPOSITORY_NAME
     ```
 
 2.  **Create Conda Environment:**
     ```bash
     conda env create -f environment.yml
-    conda activate syringe-ml
+    conda activate your-env-name
     ```
-    *(Note: Ensure necessary model weights like GroundingDINO are downloaded. See `dino/README.md` for details).*
+    *(Note: Ensure necessary model weights or pre-trained models are downloaded as per component-specific READMEs).*
 
 3.  **Download Datasets (Optional):**
-    If using pre-prepared datasets (e.g., from Roboflow), run the download notebook:
+    If your project uses specific datasets, provide instructions or a script to download them.
     ```bash
-    jupyter notebook download_datasets.ipynb
+    # Example:
+    # python download_script.py
+    # or run a Jupyter Notebook:
+    # jupyter notebook download_datasets.ipynb
     ```
 
 ## Usage
 
-Each component resides in its own directory with specific instructions:
+Each component typically resides in its own directory with specific instructions and scripts:
 
--   **`dino/`**: Run `main.ipynb` for automatic annotation. Place input images/videos in `dino/images/` or `dino/videos/`.
--   **`syringe_tracking/`**:
-    -   Train the detection model: `python train.py` (adjust config as needed).
-    -   Run inference: Use `video_inference_od.ipynb` or `webcam_inference_od.ipynb`.
--   **`volume_estimation/`**:
-    -   Train the keypoint model: `python train.py` (adjust config as needed).
-    -   Run inference and visualization: Use `video_and_webcam_inference.ipynb` or `pose_visualizer.ipynb`.
-    -   Data cleaning: `clean_syringe_data.ipynb`.
-    -   Tracking animation: `animate_tracking_history.py`.
+-   **`data_annotation/`**: Follow instructions in `data_annotation/README.md` for dataset preparation. (e.g., run `annotation_tool.py` or `main_annotation_notebook.ipynb`).
+-   **`object_detection_tracking/`**:
+    -   Train your model: `python train_detector.py --config config_file.yaml` (adjust configuration as needed).
+    -   Run inference: Use provided notebooks (e.g., `run_inference_video.ipynb`) or scripts (`run_inference_webcam.py`).
+-   **`downstream_task/`**:
+    -   Train your task-specific model: `python train_task_model.py` (if applicable).
+    -   Run inference/application: Use provided notebooks or scripts (e.g., `run_application.ipynb`).
 
 ## Folder Structure
 
 ```
 .
-├── datasets/                 # Downloaded datasets
-├── dino/                     # Automatic annotation using GroundingDINO
-├── syringe_tracking/         # Syringe detection and tracking
-├── volume_estimation/        # Keypoint detection for volume estimation
+├── datasets/                     # Raw and processed datasets
+├── data_annotation/              # Scripts and tools for data annotation
+├── object_detection_tracking/    # Object detection and tracking models and scripts
+├── downstream_task/              # Application-specific logic and models
 ├── .gitignore
-├── download_datasets.ipynb   # Notebook to download datasets
-├── environment.yml           # Conda environment definition
-└── README.md                 # This file
+├── download_datasets.ipynb       # Example notebook to download datasets
+├── environment.yml               # Conda environment definition
+└── README.md                     # This file
 ```
