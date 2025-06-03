@@ -2,13 +2,13 @@
 datasets/*
 !datasets/.gitkeep
 
-
 # Ignore everything in the ultralytics_models folder except .gitkeep
 ultralytics_models/pose/*
 !ultralytics_models/pose/.gitkeep
 
-# Ignore all folders named "runs" and their contents
+# Ignore folders and their contents
 runs/
+volume_estimation/recordings_inferenced/
 
 *.DS_Store
 *.pt
