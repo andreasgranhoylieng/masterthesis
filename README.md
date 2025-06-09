@@ -11,7 +11,7 @@ The project is organized into the following main directories:
     *   [`main.ipynb`](dino/main.ipynb:1): Performs object detection on extracted frames and saves annotations in Pascal VOC XML format.
     *   See [`dino/README.md`](dino/README.md:1) for more details.
 *   **[`syringe_tracking/`](syringe_tracking/):** Focuses on training YOLO models for syringe object detection and tracking.
-    *   [`train.py`](syringe_tracking/train.py:1): Trains YOLOv8 models for object detection.
+    *   [`train.py`](syringe_tracking/train.py:1): Trains YOLOv11 models for object detection.
     *   [`video_inference_od.ipynb`](syringe_tracking/video_inference_od.ipynb:1): Performs object detection and tracking on videos using a trained model and ByteTrack.
     *   [`webcam_inference_od.ipynb`](syringe_tracking/webcam_inference_od.ipynb:1): Performs real-time object detection and pose estimation from a webcam.
     *   [`bytetrack_od.yaml`](syringe_tracking/bytetrack_od.yaml:1): Configuration for the ByteTrack tracker.
