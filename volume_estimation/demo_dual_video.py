@@ -119,7 +119,7 @@ class SyringeVolumeEstimator:
 
         self.last_timestamps = deque(maxlen=10)
         self.save_video = False # Controlled externally now
-
+    
     def draw_volume_table( self, frame: np.ndarray, volumes: list[tuple[float, float]], table_x: int, table_y: int, track_id: int) -> None:
         frame_h, frame_w = frame.shape[:2]; table_width = 250; row_height = 25; header_height = 50
         table_height = header_height + len(volumes) * row_height + 5
@@ -128,10 +128,10 @@ class SyringeVolumeEstimator:
         if table_x < 10: table_x = 10
         if table_y < 10: table_y = 10
         table_x, table_y = int(table_x), int(table_y)
-        try:
-            overlay = frame.copy(); cv2.rectangle(overlay, (table_x, table_y), (table_x + table_width, table_y + table_height), (210, 210, 210), -1); alpha = 7; cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
-        except Exception as e: print(f"Warning: Error drawing table background: {e}")
-        text_color=(0,0,0); font=cv2.FONT_HERSHEY_SIMPLEX; font_scale=0.5; thickness=1
+        
+        cv2.rectangle(frame, (table_x, table_y), (table_x + table_width, table_y + table_height), (255, 255, 255), -1)
+        text_color=(0, 0, 0); font=cv2.FONT_HERSHEY_SIMPLEX; font_scale=0.5; thickness=1
+
         cv2.putText(frame, f"Syringe ID: {track_id}", (table_x + 10, table_y + 20), font, 0.6, text_color, thickness + 1)
         cv2.putText(frame, "Diam (cm)", (table_x + 10, table_y + header_height - 10), font, font_scale, text_color, thickness)
         cv2.putText(frame, "Volume (mL)", (table_x + 120, table_y + header_height - 10), font, font_scale, text_color, thickness)
@@ -639,8 +639,8 @@ if __name__ == "__main__":
     POSSIBLE_SYRINGE_DIAMETERS_CM = [1.0, 1.25, 2.0] # *** EDIT HERE ***
 
     # --- VIDEO FILE INPUT ---
-    MANIKIN_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/person_22/20250523_140100/cam1_20250523_140100_2592x1944.mp4"  # *** EDIT HERE: Path to the manikin perspective video ***
-    SYRINGES_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/person_22/20250523_140100/cam0_20250523_140100_2592x1944.mp4" # *** EDIT HERE: Path to the table/syringes perspective video ***
+    MANIKIN_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/person_14/20250523_122047/cam1_20250523_122047_2592x1944.mp4"  # *** EDIT HERE: Path to the manikin perspective video ***
+    SYRINGES_VIDEO_PATH = "/Users/andreas/Desktop/repos/masterthesis/volume_estimation/recordings/person_14/20250523_122047/cam0_20250523_122047_2592x1944.mp4" # *** EDIT HERE: Path to the table/syringes perspective video ***
     # --- Camera Indices Removed ---
     # MANIKIN_CAMERA_INDEX = 1
     # SYRINGES_CAMERA_INDEX = 0
@@ -648,9 +648,9 @@ if __name__ == "__main__":
     # --- Active Zone Definitions ---
     MANIKIN_TARGET_ZONE_NAMES = ["Arm", "Throat", "Foot"] # *** EDIT HERE ***
     MANIKIN_ZONE_DEFINITIONS = [
-        ActiveZone(name="Arm", rect=(2000, 850, 2250, 1250)),
-        ActiveZone(name="Throat", rect=(2100, 550, 2400, 800)),
-        ActiveZone(name="Foot", rect=(950, 750, 1250, 1100)) 
+        ActiveZone(name="Arm", rect=(1800, 850, 2050, 1250)),
+        ActiveZone(name="Throat", rect=(2200, 550, 2500, 800)),
+        ActiveZone(name="Foot", rect=(850, 780, 1150, 1100)) 
     ]
 
     SYRINGE_TABLE_ZONE_NAMES = ["Table Zone 1", "Table Zone 2", "Table Zone 3"] # *** EDIT HERE ***
@@ -667,8 +667,8 @@ if __name__ == "__main__":
     CORRECT_STARTING_ZONE = "Table Zone 1"      # *** EDIT HERE ***
     CORRECT_SYRINGE_DIAMETER_CM = 2.00          # *** EDIT HERE ***
     TARGET_VOLUME_ML = 20                    # *** EDIT HERE ***
-    VOLUME_TOLERANCE_ML = 4                  # *** EDIT HERE ***
-    CORRECT_TARGET_ZONE = "Arm"             # *** EDIT HERE ***
+    VOLUME_TOLERANCE_ML = 2                  # *** EDIT HERE ***
+    CORRECT_TARGET_ZONE = "Foot"             # *** EDIT HERE ***
 
     # --- Timeouts Removed ---
 
